@@ -1,0 +1,3336 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>Unit 4: Sentence Rewriting & Word Forms - Castle Defense & Interactive Worksheet</title>
+<style>
+/* CSS Reset & Variables - Light Theme */
+:root {
+  --primary: #4F46E5;
+  --primary-hover: #4338CA;
+  --primary-light: #EEF2FF;
+  --secondary: #0D9488;
+  --secondary-light: #F0FDFA;
+  --accent: #F59E0B;
+  --accent-light: #FEF3C7;
+  --danger: #EF4444;
+  --danger-light: #FEE2E2;
+  --success: #10B981;
+  --success-light: #D1FAE5;
+  --dark: #1E293B;
+  --slate: #475569;
+  --muted: #64748B;
+  --border: #E2E8F0;
+  --bg: #F8FAFC;
+  --card-bg: #FFFFFF;
+  --shadow: 0 4px 6px -1px rgba(0,0,0,0.07), 0 2px 4px -2px rgba(0,0,0,0.05);
+  --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -4px rgba(0,0,0,0.05);
+  --stage-scale: 1;
+}
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; margin: 0; padding: 0; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  background: var(--bg);
+  color: var(--dark);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Top Navigation Bar */
+header.app-header {
+  background: #FFFFFF;
+  border-bottom: 2px solid var(--border);
+  padding: 10px 16px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+}
+.nav-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.app-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.brand-icon {
+  font-size: 26px;
+  background: var(--primary-light);
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  border: 2px solid #C7D2FE;
+}
+.brand-title h1 {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--primary);
+  line-height: 1.2;
+}
+.brand-title p {
+  font-size: 0.78rem;
+  color: var(--muted);
+  font-weight: 500;
+}
+
+/* Mode Tabs */
+.mode-tabs {
+  display: flex;
+  background: var(--bg);
+  padding: 4px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  gap: 4px;
+}
+.mode-tab {
+  padding: 8px 14px;
+  border: none;
+  background: transparent;
+  color: var(--slate);
+  font-weight: 700;
+  font-size: 0.86rem;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+}
+.mode-tab:hover { color: var(--primary); }
+.mode-tab.active {
+  background: var(--primary);
+  color: #FFFFFF;
+  box-shadow: 0 2px 4px rgba(79, 70, 229, 0.25);
+}
+
+/* Stats Pills */
+.nav-stats {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.coin-pill {
+  background: #FEF3C7;
+  color: #B45309;
+  border: 1.5px solid #FCD34D;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-weight: 800;
+  font-size: 0.88rem;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 1px 2px rgba(245, 158, 11, 0.15);
+}
+.coin-pill span.coin-icon { font-size: 1.1rem; }
+.btn-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  border: 1.5px solid var(--border);
+  background: #FFFFFF;
+  color: var(--slate);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 1.1rem;
+  transition: all 0.15s ease;
+}
+.btn-icon:hover { background: var(--primary-light); color: var(--primary); border-color: #C7D2FE; }
+
+/* App Main Container */
+main.app-main {
+  flex: 1;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+.view-section { display: none; width: 100%; }
+.view-section.active { display: block; }
+
+/* ==========================================================================
+   VIEW 1: CASTLE DEFENSE GAME
+   ========================================================================== */
+#view_game {
+  background: #1e293b;
+  position: relative;
+  overflow: hidden;
+  height: calc(100vh - 68px);
+  min-height: 600px;
+}
+#game_viewport {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  touch-action: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+#game_stage {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 1280px;
+  height: 720px;
+  transform-origin: 50% 50%;
+  transform: translate(-50%, -50%) scale(1);
+  overflow: hidden;
+  box-shadow: 0 0 50px rgba(0,0,0,0.6);
+  background: #cceeff;
+}
+canvas#field { position: absolute; left: 0; top: 0; z-index: 1; width: 1280px; height: 720px; }
+
+/* Game HUD */
+.game-hud {
+  position: absolute;
+  top: 14px;
+  left: 18px;
+  right: 18px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 10;
+  pointer-events: none;
+}
+.hud-card {
+  background: rgba(255,255,255,0.94);
+  backdrop-filter: blur(8px);
+  border: 2px solid #CBD5E1;
+  border-radius: 14px;
+  padding: 6px 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+  pointer-events: auto;
+}
+.hud-hp-box { display: flex; align-items: center; gap: 8px; }
+.hp-bar-bg {
+  width: 140px;
+  height: 16px;
+  background: #E2E8F0;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1.5px solid #94A3B8;
+  position: relative;
+}
+.hp-bar-fill {
+  height: 100%;
+  width: 100%;
+  background: linear-gradient(90deg, #10B981, #34D399);
+  transition: width 0.3s ease;
+}
+.hud-wave {
+  font-weight: 800;
+  font-size: 0.95rem;
+  color: var(--primary);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.hud-streak {
+  font-weight: 800;
+  color: #D97706;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Game Floating Panel (Questions & Shop) */
+.stage-panel {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 20;
+  width: 900px;
+  max-width: 95%;
+  background: #FFFFFF;
+  border-radius: 20px;
+  border: 3px solid #C7D2FE;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.stage-panel.hidden { display: none !important; }
+
+/* Question Box Inside Game */
+.game-q-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 2px dashed #E2E8F0;
+  padding-bottom: 12px;
+}
+.q-badge-wrap { display: flex; align-items: center; gap: 8px; }
+.badge-level {
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 0.76rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.badge-level.l1 { background: #DBEAFE; color: #1E40AF; }
+.badge-level.l2 { background: #FEF3C7; color: #92400E; }
+.badge-level.l3 { background: #FEE2E2; color: #991B1B; }
+.badge-mode {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 0.74rem;
+  font-weight: 800;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+}
+.badge-mode.chips {
+  background: #CCFBF1;
+  color: #0F766E;
+  border: 1px solid #99F6E4;
+}
+.badge-mode.type {
+  background: #EDE9FE;
+  color: #6D28D9;
+  border: 1px solid #DDD6FE;
+}
+.mode-instruction-banner {
+  padding: 9px 14px;
+  border-radius: 10px;
+  font-size: 0.86rem;
+  line-height: 1.4;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+}
+.mode-instruction-banner.type-banner {
+  background: #F5F3FF;
+  border: 1.5px solid #DDD6FE;
+  color: #5B21B6;
+}
+.mode-instruction-banner.chips-banner {
+  background: #F0FDFA;
+  border: 1.5px solid #CCFBF1;
+  color: #0F766E;
+}
+.ws-typing-banner {
+  background: #F5F3FF;
+  border: 1.5px dashed #C4B5FD;
+  border-radius: 10px;
+  padding: 9px 12px;
+  color: #5B21B6;
+  font-size: 0.85rem;
+  line-height: 1.35;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.q-title-text { font-weight: 800; font-size: 0.92rem; color: var(--primary); }
+
+.q-prompt-box {
+  background: var(--bg);
+  border: 2px solid var(--border);
+  border-radius: 14px;
+  padding: 14px 18px;
+}
+.orig-sent-label {
+  font-size: 0.76rem;
+  text-transform: uppercase;
+  color: var(--muted);
+  font-weight: 800;
+  margin-bottom: 4px;
+}
+.orig-sent-text {
+  font-size: 1.12rem;
+  font-weight: 700;
+  color: var(--dark);
+  line-height: 1.4;
+}
+.lead-prompt-text {
+  margin-top: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--primary);
+}
+
+/* Answer Area */
+.answer-area {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.answer-display-box {
+  min-height: 52px;
+  border: 2px solid #CBD5E1;
+  background: #FFFFFF;
+  border-radius: 12px;
+  padding: 8px 12px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  cursor: text;
+}
+.answer-display-box:focus-within {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(79,70,229,0.15);
+}
+.placed-chip {
+  background: var(--primary-light);
+  color: var(--primary);
+  border: 1.5px solid #C7D2FE;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 0.92rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  user-select: none;
+}
+.placed-chip:hover {
+  background: #FEE2E2;
+  color: #DC2626;
+  border-color: #FCA5A5;
+}
+.placed-chip::after { content: "×"; font-size: 1rem; font-weight: bold; }
+.ans-text-input {
+  flex: 1;
+  min-width: 140px;
+  border: none;
+  outline: none;
+  font-size: 1rem;
+  font-family: inherit;
+  color: var(--dark);
+  background: transparent;
+}
+
+/* Word Bank Chips */
+.chips-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 8px 0;
+}
+.bank-chip {
+  background: #F1F5F9;
+  color: #334155;
+  border: 2px solid #CBD5E1;
+  padding: 7px 14px;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 0.92rem;
+  cursor: pointer;
+  user-select: none;
+  transition: all 0.15s ease;
+}
+.bank-chip:hover {
+  background: #E2E8F0;
+  border-color: #94A3B8;
+  transform: translateY(-1px);
+}
+.bank-chip.used {
+  opacity: 0.35;
+  pointer-events: none;
+  border-style: dashed;
+}
+
+/* Multiple Choice Buttons (for Word Form) */
+.mc-options-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  margin: 6px 0;
+}
+.mc-option-btn {
+  background: #FFFFFF;
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  padding: 12px 16px;
+  font-size: 0.98rem;
+  font-weight: 700;
+  color: var(--dark);
+  cursor: pointer;
+  text-align: left;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: all 0.15s ease;
+}
+.mc-option-btn:hover {
+  border-color: var(--primary);
+  background: var(--primary-light);
+  color: var(--primary);
+}
+.mc-option-btn.selected {
+  border-color: var(--primary);
+  background: var(--primary);
+  color: #FFFFFF;
+}
+.mc-opt-letter {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #E2E8F0;
+  color: var(--slate);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 0.85rem;
+}
+.mc-option-btn.selected .mc-opt-letter {
+  background: #FFFFFF;
+  color: var(--primary);
+}
+
+/* Clue & Controls */
+.q-tools-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.btn-clue {
+  background: #FEF3C7;
+  color: #92400E;
+  border: 1.5px solid #FCD34D;
+  padding: 7px 14px;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 0.86rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.btn-clue:hover { background: #FDE68A; }
+.btn-speech {
+  background: #F1F5F9;
+  color: var(--slate);
+  border: 1.5px solid var(--border);
+  padding: 7px 12px;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 0.86rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.btn-speech:hover { background: var(--primary-light); color: var(--primary); }
+.clue-box {
+  display: none;
+  background: #FFFBEB;
+  border: 2px solid #FDE68A;
+  border-radius: 12px;
+  padding: 12px 16px;
+  font-size: 0.9rem;
+  color: #78350F;
+  line-height: 1.45;
+}
+.clue-box.show { display: block; }
+
+/* Action Buttons Row */
+.q-action-row {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  border-top: 2px dashed #E2E8F0;
+  padding-top: 14px;
+}
+.btn-secondary {
+  background: #F1F5F9;
+  color: var(--slate);
+  border: 2px solid var(--border);
+  padding: 10px 16px;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+.btn-primary {
+  background: var(--primary);
+  color: #FFFFFF;
+  border: 2px solid var(--primary-hover);
+  padding: 11px 24px;
+  border-radius: 12px;
+  font-weight: 800;
+  font-size: 1rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 4px 8px rgba(79,70,229,0.3);
+  transition: all 0.15s ease;
+}
+.btn-primary:hover {
+  background: var(--primary-hover);
+  transform: translateY(-1px);
+}
+
+/* Feedback Box */
+.feedback-box {
+  display: none;
+  border-radius: 14px;
+  padding: 14px 18px;
+  font-size: 0.94rem;
+  line-height: 1.5;
+}
+.feedback-box.correct {
+  display: block;
+  background: #ECFDF5;
+  border: 2px solid #6EE7B7;
+  color: #065F46;
+}
+.feedback-box.wrong {
+  display: block;
+  background: #FEF2F2;
+  border: 2px solid #FCA5A5;
+  color: #991B1B;
+}
+
+/* Defense Shop Inside Game */
+.shop-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 2px solid var(--border);
+  padding-bottom: 12px;
+}
+.shop-title {
+  font-size: 1.25rem;
+  font-weight: 900;
+  color: var(--primary);
+}
+.shop-boss-alert {
+  background: #FEF2F2;
+  border: 2px solid #F87171;
+  border-radius: 12px;
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #991B1B;
+  font-weight: 700;
+  font-size: 0.92rem;
+}
+.shop-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin: 10px 0;
+}
+.shop-card {
+  background: #FFFFFF;
+  border: 2px solid #CBD5E1;
+  border-radius: 14px;
+  padding: 12px 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 6px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+  transition: all 0.15s ease;
+}
+.shop-card:hover { border-color: var(--primary); transform: translateY(-2px); }
+.shop-card.cant { opacity: 0.55; }
+.shop-card.maxed { border-color: #10B981; background: #F0FDF4; }
+.unit-icon { font-size: 32px; line-height: 1; }
+.unit-name { font-weight: 800; font-size: 0.88rem; color: var(--dark); }
+.unit-desc { font-size: 0.72rem; color: var(--muted); line-height: 1.25; min-height: 28px; }
+.unit-owned {
+  font-size: 0.74rem;
+  font-weight: 800;
+  color: var(--primary);
+  background: var(--primary-light);
+  padding: 2px 8px;
+  border-radius: 10px;
+}
+.btn-buy {
+  width: 100%;
+  background: #FEF3C7;
+  color: #92400E;
+  border: 2px solid #FCD34D;
+  border-radius: 8px;
+  padding: 6px;
+  font-weight: 800;
+  font-size: 0.86rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+.btn-buy:hover:not(:disabled) { background: #FDE68A; }
+.btn-buy:disabled { opacity: 0.5; cursor: not-allowed; }
+.shop-bottom-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 2px solid var(--border);
+  padding-top: 14px;
+}
+
+/* Banner Overlay */
+.game-banner {
+  position: absolute;
+  top: 90px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-20px);
+  z-index: 25;
+  padding: 10px 24px;
+  border-radius: 30px;
+  font-weight: 900;
+  font-size: 1.25rem;
+  color: #FFFFFF;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.25);
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.game-banner.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+.game-banner.good { background: linear-gradient(135deg, #10B981, #059669); border: 2px solid #34D399; }
+.game-banner.bad { background: linear-gradient(135deg, #EF4444, #DC2626); border: 2px solid #F87171; }
+.game-banner.info { background: linear-gradient(135deg, #4F46E5, #3730A3); border: 2px solid #818CF8; }
+
+/* End Overlay */
+.end-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.85);
+  backdrop-filter: blur(6px);
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.end-overlay.hidden { display: none; }
+.end-card {
+  background: #FFFFFF;
+  border-radius: 24px;
+  padding: 36px 40px;
+  text-align: center;
+  width: 500px;
+  max-width: 90%;
+  box-shadow: 0 25px 50px rgba(0,0,0,0.35);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+.end-trophy { font-size: 64px; line-height: 1; }
+.end-title { font-size: 1.6rem; font-weight: 900; color: var(--dark); }
+.end-score-box {
+  background: var(--primary-light);
+  border: 2px solid #C7D2FE;
+  border-radius: 16px;
+  padding: 12px 24px;
+  font-size: 1.4rem;
+  font-weight: 900;
+  color: var(--primary);
+}
+
+/* ==========================================================================
+   VIEW 2: INTERACTIVE WORKSHEET (LIGHT THEME)
+   ========================================================================== */
+#view_worksheet {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 24px 16px 80px 16px;
+}
+.ws-hero {
+  background: linear-gradient(135deg, #EEF2FF 0%, #E0E7FF 100%);
+  border: 2px solid #C7D2FE;
+  border-radius: 20px;
+  padding: 24px 28px;
+  margin-bottom: 24px;
+  box-shadow: var(--shadow);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+.ws-hero-text h2 {
+  font-size: 1.4rem;
+  font-weight: 900;
+  color: var(--primary-hover);
+  margin-bottom: 6px;
+}
+.ws-hero-text p {
+  color: var(--slate);
+  font-size: 0.92rem;
+  line-height: 1.4;
+}
+.ws-progress-card {
+  background: #FFFFFF;
+  border-radius: 14px;
+  padding: 12px 18px;
+  border: 1.5px solid #CBD5E1;
+  min-width: 220px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+}
+.ws-prog-num {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--primary);
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+.ws-prog-bar-bg {
+  height: 10px;
+  background: #E2E8F0;
+  border-radius: 5px;
+  overflow: hidden;
+}
+.ws-prog-bar-fill {
+  height: 100%;
+  width: 0%;
+  background: var(--primary);
+  transition: width 0.3s ease;
+}
+
+/* Filter Bar */
+.ws-filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 20px;
+  background: #FFFFFF;
+  padding: 10px 14px;
+  border-radius: 14px;
+  border: 1.5px solid var(--border);
+  box-shadow: var(--shadow);
+}
+.filter-btn {
+  background: var(--bg);
+  border: 1.5px solid var(--border);
+  color: var(--slate);
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 0.84rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.filter-btn:hover { border-color: var(--primary); color: var(--primary); }
+.filter-btn.active {
+  background: var(--primary);
+  color: #FFFFFF;
+  border-color: var(--primary);
+}
+
+/* Pattern Section Blocks */
+.pattern-section-block {
+  margin-bottom: 28px;
+}
+.pattern-hdr {
+  background: #FFFFFF;
+  border-left: 5px solid var(--primary);
+  border-top: 1.5px solid var(--border);
+  border-right: 1.5px solid var(--border);
+  border-bottom: 1.5px solid var(--border);
+  border-radius: 14px;
+  padding: 14px 18px;
+  margin-bottom: 14px;
+  box-shadow: var(--shadow);
+}
+.pattern-hdr h3 {
+  font-size: 1.1rem;
+  font-weight: 900;
+  color: var(--dark);
+  margin-bottom: 4px;
+}
+.pattern-formula-pill {
+  display: inline-block;
+  background: var(--primary-light);
+  color: var(--primary-hover);
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-family: monospace;
+  font-size: 0.85rem;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+.pattern-rule-desc {
+  font-size: 0.86rem;
+  color: var(--slate);
+  line-height: 1.4;
+}
+
+/* Question Item Card (Worksheet) */
+.ws-q-card {
+  background: #FFFFFF;
+  border: 1.5px solid var(--border);
+  border-radius: 16px;
+  padding: 18px 20px;
+  margin-bottom: 14px;
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: border-color 0.2s ease;
+}
+.ws-q-card.solved {
+  border-color: #10B981;
+  background: #F0FDF4;
+}
+.ws-q-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.ws-q-num {
+  font-weight: 800;
+  font-size: 0.94rem;
+  color: var(--primary);
+}
+
+/* ==========================================================================
+   VIEW 3: RULES & FORMULAS (CHEAT SHEET)
+   ========================================================================== */
+#view_rules {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 24px 16px 80px 16px;
+}
+.rules-hero {
+  background: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%);
+  border: 2px solid #FCD34D;
+  border-radius: 20px;
+  padding: 22px 26px;
+  margin-bottom: 24px;
+  color: #78350F;
+}
+.rules-hero h2 { font-size: 1.35rem; font-weight: 900; margin-bottom: 4px; }
+.rules-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #FFFFFF;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  margin-bottom: 28px;
+}
+.rules-table th, .rules-table td {
+  padding: 12px 16px;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.9rem;
+}
+.rules-table th {
+  background: #F8FAFC;
+  font-weight: 800;
+  color: var(--slate);
+  text-transform: uppercase;
+  font-size: 0.78rem;
+}
+.rules-table tr:hover td { background: #F1F5F9; }
+
+/* Mobile Adaptations */
+@media (max-width: 768px) {
+  .shop-grid { grid-template-columns: repeat(2, 1fr); }
+  .mc-options-grid { grid-template-columns: 1fr; }
+  .nav-container { flex-direction: column; align-items: stretch; }
+  .mode-tabs { justify-content: center; }
+  .stage-panel { padding: 16px; width: 96%; }
+  .orig-sent-text { font-size: 1rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<header class="app-header">
+  <div class="nav-container">
+    <div class="app-brand">
+      <div class="brand-icon">🏰</div>
+      <div class="brand-title">
+        <h1>Unit 4: Music & Arts Mastery</h1>
+        <p>Sentence Rewriting & Word Forms • 3-Level Scaffolding</p>
+      </div>
+    </div>
+
+    <!-- Mode Tabs -->
+    <div class="mode-tabs">
+      <button class="mode-tab active" id="tab_game" onclick="switchView('game')">
+        <span>🎮</span> Thủ Thành (Game)
+      </button>
+      <button class="mode-tab" id="tab_worksheet" onclick="switchView('worksheet')">
+        <span>📝</span> Phiếu Bài Tập
+      </button>
+      <button class="mode-tab" id="tab_rules" onclick="switchView('rules')">
+        <span>📖</span> Sổ Tay Quy Tắc
+      </button>
+    </div>
+
+    <!-- Stats & Buttons -->
+    <div class="nav-stats">
+      <div class="coin-pill">
+        <span class="coin-icon">🪙</span>
+        <span id="top_coins">0</span>
+      </div>
+      <button class="btn-icon" id="btn_sound" onclick="toggleMute()" title="Bật/Tắt âm thanh">🔊</button>
+      <button class="btn-icon" id="btn_fullscreen" onclick="toggleFullscreen()" title="Toàn màn hình">⛶</button>
+    </div>
+  </div>
+</header>
+
+<!-- Main Views -->
+<main class="app-main">
+
+  <!-- ================= VIEW 1: CASTLE DEFENSE GAME ================= -->
+  <section id="view_game" class="view-section active">
+    <div id="game_viewport">
+      <div id="game_stage">
+        <canvas id="field" width="1280" height="720"></canvas>
+
+        <!-- HUD -->
+        <div class="game-hud">
+          <div class="hud-card">
+            <div class="hud-hp-box">
+              <span style="font-size:1.2rem;">🏰</span>
+              <div class="hp-bar-bg"><div class="hp-bar-fill" id="game_hp_fill"></div></div>
+              <span id="game_hp_val" style="font-weight:800; font-size:0.86rem; color:var(--dark);">20 / 20</span>
+            </div>
+            <div class="hud-wave" id="game_wave_title">
+              <span>🌊</span> Wave 1 / 8
+            </div>
+          </div>
+
+          <div class="hud-card">
+            <div class="hud-streak" id="game_streak_box">
+              <span>🔥</span> Streak: <span id="game_streak_num">0</span>
+            </div>
+            <div style="font-weight:900; color:var(--primary); font-size:0.95rem;">
+              Score: <span id="game_score_val">0</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Banner -->
+        <div class="game-banner" id="game_banner">Notification Banner</div>
+
+        <!-- Floating Question Panel -->
+        <div class="stage-panel" id="panel_question">
+          <div class="game-q-header">
+            <div class="q-badge-wrap">
+              <span class="badge-level l1" id="gq_badge">Level 1: Learn & Guide</span>
+              <span class="q-title-text" id="gq_category">Sentence Rewriting</span>
+            </div>
+            <div style="font-weight:800; color:var(--muted); font-size:0.85rem;" id="gq_counter">
+              CÂU 1 / 3
+            </div>
+          </div>
+
+          <div class="q-prompt-box">
+            <div class="orig-sent-label" id="gq_orig_label">CÂU GỐC CẦN VIẾT LẠI:</div>
+            <div class="orig-sent-text" id="gq_orig_text">This portrait is similar to that photograph.</div>
+            <div class="lead-prompt-text" id="gq_lead_text">This portrait is like ________________________</div>
+          </div>
+
+          <!-- Clue row -->
+          <div class="q-tools-row">
+            <button class="btn-clue" onclick="toggleGameClue()">💡 Xem gợi ý (Clue)</button>
+            <button class="btn-speech" onclick="speakCurrentSentence()">🔊 Nghe phát âm</button>
+          </div>
+          <div class="clue-box" id="game_clue_box"></div>
+
+          <!-- Mode Banner (Typing vs Chips) -->
+          <div class="mode-instruction-banner chips-banner" id="gq_mode_banner">
+            <span id="gq_mode_icon">🧩</span>
+            <span id="gq_mode_text"><strong>CHẾ ĐỘ CHỌN TỪ:</strong> Nhấp vào các thẻ từ để ghép thành câu.</span>
+          </div>
+
+          <!-- Answer Area for Rewrite -->
+          <div class="answer-area" id="gq_answer_area_rewrite">
+            <div class="answer-display-box" id="gq_chips_placed_box" onclick="focusGameInput()">
+              <input type="text" class="ans-text-input" id="gq_text_input" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Bấm chọn các từ bên dưới hoặc gõ trực tiếp...">
+            </div>
+            <div class="chips-container" id="gq_bank_chips"></div>
+          </div>
+
+          <!-- Answer Box (Multiple Choice for Word Form - Chips Mode) -->
+          <div class="mc-options-grid" id="gq_answer_area_wordform" style="display:none;"></div>
+
+          <!-- Answer Box (Direct Typing for Word Form - Typing Mode) -->
+          <div class="answer-area" id="gq_answer_area_wf_typing" style="display:none;">
+            <div class="answer-display-box">
+              <input type="text" class="ans-text-input" id="gq_wf_text_input" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="✍️ Tự gõ dạng từ đúng vào đây...">
+            </div>
+          </div>
+
+          <!-- Feedback Box -->
+          <div class="feedback-box" id="game_feedback_box"></div>
+
+          <!-- Bottom Action Buttons -->
+          <div class="q-action-row">
+            <button class="btn-secondary" onclick="resetGameAnswer()">↺ Xóa làm lại</button>
+            <button class="btn-primary" id="btn_submit_game" onclick="submitGameAnswer()">✓ KIỂM TRA ĐÁP ÁN</button>
+          </div>
+        </div>
+
+        <!-- Defense Shop Panel -->
+        <div class="stage-panel hidden" id="panel_shop">
+          <div class="shop-header">
+            <div class="shop-title">🛒 Cửa Hàng Phòng Thủ Hoàng Gia</div>
+            <div class="coin-pill"><span class="coin-icon">🪙</span> <span id="shop_coins_val">0</span> Xu</div>
+          </div>
+
+          <div class="shop-boss-alert" id="shop_boss_preview">
+            <span style="font-size:1.5rem;" id="shop_boss_ico">👹</span>
+            <div>
+              <div id="shop_boss_name" style="font-size:1.02rem;">⚠️ Wave 1 Boss: Gark the Goblin Chieftain (HP: 70)</div>
+              <div id="shop_boss_desc" style="font-size:0.8rem; font-weight:500;">Tốc độ chạy cực nhanh với song đao, triệu hồi tiểu yêu tinh!</div>
+            </div>
+          </div>
+
+          <div class="shop-grid" id="shop_cards_container"></div>
+
+          <div class="shop-bottom-bar">
+            <div style="font-size:0.85rem; color:var(--muted);">Mẹo: Đặt Frost Mage để làm chậm Boss và Catapult để nổ diện rộng!</div>
+            <button class="btn-primary" style="padding:12px 28px; font-size:1.05rem;" onclick="startBattleWave()">
+              ⚔️ TIẾN VÀO TRẬN ĐÁNH!
+            </button>
+          </div>
+        </div>
+
+        <!-- End Game Overlay -->
+        <div class="end-overlay hidden" id="game_end_overlay">
+          <div class="end-card">
+            <div class="end-trophy" id="end_trophy">🏆</div>
+            <div class="end-title" id="end_title">LÂU ĐÀI ĐÃ ĐƯỢC BẢO VỆ!</div>
+            <p id="end_desc" style="color:var(--slate); font-size:0.95rem; line-height:1.4;">
+              Bạn đã xuất sắc vượt qua toàn bộ 8 đợt tấn công và tiêu diệt trùm cuối Chaos Overlord!
+            </p>
+            <div class="end-score-box">
+              Tổng điểm: <span id="end_score">24 / 24</span> (100%)
+            </div>
+            <button class="btn-primary" style="margin-top:8px; padding:12px 28px;" onclick="restartGame()">
+              🔄 CHƠI LẠI TRẬN MỚI
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= VIEW 2: INTERACTIVE WORKSHEET ================= -->
+  <section id="view_worksheet" class="view-section">
+    <div class="ws-hero">
+      <div class="ws-hero-text">
+        <h2>📝 Phiếu Bài Tập Tương Tác Unit 4</h2>
+        <p>Luyện tập toàn diện <strong>Viết lại câu</strong> và <strong>Dạng của từ (Word Forms)</strong> theo 3 cấp độ giàn giáo (Scaffolding: Nhận biết ➔ Luyện tập ➔ Làm chủ).</p>
+      </div>
+      <div class="ws-progress-card">
+        <div class="ws-prog-num">
+          <span>Tiến độ hoàn thành:</span>
+          <span id="ws_prog_text">0 / 45</span>
+        </div>
+        <div class="ws-prog-bar-bg">
+          <div class="ws-prog-bar-fill" id="ws_prog_fill"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="ws-filter-bar">
+      <button class="filter-btn active" onclick="filterWorksheet('all', this)">Tất cả (45 câu)</button>
+      <button class="filter-btn" onclick="filterWorksheet('type', this)">⌨️ Tự gõ bàn phím (30 câu)</button>
+      <button class="filter-btn" onclick="filterWorksheet('chips', this)">🧩 Thẻ từ & Trắc nghiệm (15 câu)</button>
+      <button class="filter-btn" onclick="filterWorksheet('rewrite', this)">✍️ Viết lại câu (21 câu)</button>
+      <button class="filter-btn" onclick="filterWorksheet('wordform', this)">🧩 Dạng của từ (24 câu)</button>
+      <button class="filter-btn" onclick="filterWorksheet('l1', this)">Level 1: Nhận biết</button>
+      <button class="filter-btn" onclick="filterWorksheet('l2', this)">Level 2: Luyện tập</button>
+      <button class="filter-btn" onclick="filterWorksheet('l3', this)">Level 3: Vận dụng cao</button>
+    </div>
+
+    <!-- Container for Worksheet items -->
+    <div id="worksheet_items_container"></div>
+  </section>
+
+  <!-- ================= VIEW 3: RULES & DERIVATION CHEAT SHEET ================= -->
+  <section id="view_rules" class="view-section">
+    <div class="rules-hero">
+      <h2>📖 Sổ Tay Quy Tắc & Ma Trận Biến Đổi Unit 4</h2>
+      <p>Tổng hợp chuẩn xác toàn bộ 7 mẫu biến đổi câu và 8 họ từ nòng cốt trong chương trình Tiếng Anh 7 Global Success.</p>
+    </div>
+
+    <!-- Part 1: Sentence Rewrite Rules -->
+    <div class="pattern-section-block">
+      <div class="pattern-hdr">
+        <h3>1. BẢNG 7 CÔNG THỨC VIẾT LẠI CÂU KINH ĐIỂN</h3>
+      </div>
+      <table class="rules-table">
+        <thead>
+          <tr>
+            <th style="width:25%;">Mẫu Biến Đổi</th>
+            <th style="width:38%;">Công Thức Cặp Tương Đương</th>
+            <th style="width:37%;">Ví Dụ Minh Họa</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>1. similar to ⟷ like</strong></td>
+            <td><code>S1 + be + similar to + S2</code><br>⟷ <code>S1 + be + like + S2</code></td>
+            <td>This portrait is <strong>similar to</strong> that photo.<br>➔ This portrait is <strong>like</strong> that photo.</td>
+          </tr>
+          <tr>
+            <td><strong>2. different ⟷ different from</strong></td>
+            <td><code>S1 and S2 + are different</code><br>⟷ <code>S1 + is different from + S2</code></td>
+            <td>Rock and folk are <strong>different</strong>.<br>➔ Rock is <strong>different from</strong> folk.</td>
+          </tr>
+          <tr>
+            <td><strong>3. the same [noun] as ⟷ as [adj] as</strong></td>
+            <td><code>Both are the same size</code><br>⟷ <code>A is as big/large as B</code></td>
+            <td>Both puppets are <strong>the same size</strong>.<br>➔ The red puppet is <strong>as big as</strong> the blue one.</td>
+          </tr>
+          <tr>
+            <td><strong>4. better than ⟷ not as good as</strong></td>
+            <td><code>S1 + was better than + S2</code><br>⟷ <code>S2 + was not as good as + S1</code></td>
+            <td>The 1st show was <strong>better than</strong> the 2nd.<br>➔ The 2nd show was <strong>not as good as</strong> the 1st.</td>
+          </tr>
+          <tr>
+            <td><strong>5. not the same as ⟷ different from</strong></td>
+            <td><code>S1 + be + not the same as + S2</code><br>⟷ <code>S1 + be + different from + S2</code></td>
+            <td>A sculpture is <strong>not the same as</strong> a painting.<br>➔ A sculpture is <strong>different from</strong> a painting.</td>
+          </tr>
+          <tr>
+            <td><strong>6. adj-er than ⟷ not as adj as</strong></td>
+            <td><code>S1 + be + quieter than + S2</code><br>⟷ <code>S2 + be + not as quiet as + S1</code></td>
+            <td>The gallery is <strong>quieter than</strong> the theatre.<br>➔ The theatre is <strong>not as quiet as</strong> the gallery.</td>
+          </tr>
+          <tr>
+            <td><strong>7. like ... more than ⟷ prefer ... to</strong></td>
+            <td><code>S + like A more than B</code><br>⟷ <code>S + prefer A to B</code></td>
+            <td>I <strong>like</strong> folk <strong>more than</strong> pop.<br>➔ I <strong>prefer</strong> folk <strong>to</strong> pop.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Part 2: Word Form Derivations -->
+    <div class="pattern-section-block">
+      <div class="pattern-hdr">
+        <h3>2. MA TRẬN 8 HỌ TỪ VỰNG TRỌNG TÂM UNIT 4</h3>
+      </div>
+      <table class="rules-table">
+        <thead>
+          <tr>
+            <th>Từ gốc (Root)</th>
+            <th>Danh từ (Noun)</th>
+            <th>Động từ (Verb)</th>
+            <th>Tính từ (Adjective)</th>
+            <th>Trạng từ (Adverb)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>EXHIBIT</strong></td>
+            <td><strong>exhibition</strong> (cuộc triển lãm)<br><strong>exhibitor</strong> (người triển lãm)</td>
+            <td><strong>exhibit</strong> (trưng bày)</td>
+            <td>exhibited</td>
+            <td>—</td>
+          </tr>
+          <tr>
+            <td><strong>PHOTOGRAPH</strong></td>
+            <td><strong>photographer</strong> (nhiếp ảnh gia)<br><strong>photography</strong> (nghề chụp ảnh)</td>
+            <td><strong>photograph</strong> (chụp ảnh)</td>
+            <td>photographic</td>
+            <td>photographically</td>
+          </tr>
+          <tr>
+            <td><strong>PORTRAY</strong></td>
+            <td><strong>portrayal</strong> (sự khắc họa)<br><strong>portrait</strong> (tranh chân dung)</td>
+            <td><strong>portray</strong> (miêu tả)</td>
+            <td>portrayed</td>
+            <td>—</td>
+          </tr>
+          <tr>
+            <td><strong>PUPPET</strong></td>
+            <td><strong>puppeteer</strong> (nghệ nhân rối)<br><strong>puppetry</strong> (nghệ thuật rối)</td>
+            <td>—</td>
+            <td>puppet</td>
+            <td>—</td>
+          </tr>
+          <tr>
+            <td><strong>SCULPT</strong></td>
+            <td><strong>sculpture</strong> (tượng/điêu khắc)<br><strong>sculptor</strong> (nhà điêu khắc)</td>
+            <td><strong>sculpt</strong> (tạc tượng)</td>
+            <td>sculpted</td>
+            <td>—</td>
+          </tr>
+          <tr>
+            <td><strong>ART</strong></td>
+            <td><strong>artist</strong> (nghệ sĩ/họa sĩ)<br><strong>artistry</strong> (tính nghệ thuật)</td>
+            <td>—</td>
+            <td><strong>artistic</strong> (khéo léo, nghệ thuật)</td>
+            <td><strong>artistically</strong></td>
+          </tr>
+          <tr>
+            <td><strong>BEAUTY</strong></td>
+            <td><strong>beauty</strong> (vẻ đẹp)</td>
+            <td>beautify (làm đẹp)</td>
+            <td><strong>beautiful</strong> (xinh đẹp)</td>
+            <td><strong>beautifully</strong> (tuyệt vời)</td>
+          </tr>
+          <tr>
+            <td><strong>DIFFER</strong></td>
+            <td><strong>difference</strong> (sự khác nhau)</td>
+            <td><strong>differ</strong> (khác với)</td>
+            <td><strong>different</strong> (khác biệt)</td>
+            <td><strong>differently</strong> (khác đi)</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+</main>
+
+<!-- Game & Data Scripts -->
+<script>
+// Data Injections
+var ALL_POOL = [{"type": "rewrite", "patternId": "pat_similar_like", "patternTitle": "Mẫu 1: similar to ⟷ like", "ruleVn": "Cụm 'similar to' (tương tự như) có thể thay thế bằng giới từ 'like' (giống như) khi so sánh nét tương đồng giữa 2 đối tượng.", "formula": "S1 + be + similar to + S2  ⟷  S1 + be + like + S2", "id": "rw_1_1", "var": 1, "inputMode": "chips", "badge": "Level 1: Click chọn từ (Learn)", "orig": "This portrait is similar to that photograph.", "lead": "This portrait is like", "target": "This portrait is like that photograph.", "accept": ["This portrait is like that photograph.", "This portrait is like that photograph", "this portrait is like that photograph.", "this portrait is like that photograph", "that photograph.", "that photograph"], "chips": ["This portrait", "is", "like", "that photograph", "similar to", "as", "painting"], "clue": "💡 <strong>Gợi ý:</strong> Thay thế cụm từ <em>'is similar to'</em> bằng <em>'is like'</em>. Giữ nguyên đối tượng so sánh phía sau là <em>'that photograph'</em>.", "explain": "Trong tiếng Anh lớp 7 Unit 4, cấu trúc <strong>be + like + Noun</strong> mang nghĩa tương đương với <strong>be + similar to + Noun</strong> (giống như / tương tự như)."}, {"type": "rewrite", "patternId": "pat_similar_like", "patternTitle": "Mẫu 1: similar to ⟷ like", "ruleVn": "Cụm 'similar to' (tương tự như) có thể thay thế bằng giới từ 'like' (giống như) khi so sánh nét tương đồng giữa 2 đối tượng.", "formula": "S1 + be + similar to + S2  ⟷  S1 + be + like + S2", "id": "rw_1_2", "var": 2, "inputMode": "type", "badge": "Level 2: Tự gõ bàn phím (Practice)", "orig": "The rhythm of modern pop is similar to electronic dance music.", "lead": "The rhythm of modern pop is like", "target": "The rhythm of modern pop is like electronic dance music.", "accept": ["The rhythm of modern pop is like electronic dance music.", "The rhythm of modern pop is like electronic dance music", "the rhythm of modern pop is like electronic dance music.", "electronic dance music.", "electronic dance music"], "chips": ["The rhythm of modern pop", "is", "like", "electronic dance music", "similar to", "different from"], "clue": "💡 <strong>Gợi ý:</strong> Chuyển 'is similar to' thành 'is like' và tự gõ cụm từ 'electronic dance music'.", "explain": "Ta thay 'is similar to' bằng 'is like' để diễn tả nhịp điệu của nhạc pop hiện đại giống với nhạc điện tử khiêu vũ."}, {"type": "rewrite", "patternId": "pat_similar_like", "patternTitle": "Mẫu 1: similar to ⟷ like", "ruleVn": "Cụm 'similar to' (tương tự như) có thể thay thế bằng giới từ 'like' (giống như) khi so sánh nét tương đồng giữa 2 đối tượng.", "formula": "S1 + be + similar to + S2  ⟷  S1 + be + like + S2", "id": "rw_1_3", "var": 3, "inputMode": "type", "badge": "Level 3: Tự gõ cả câu (Mastery)", "orig": "Her new watercolor painting is similar to a real landscape photograph.", "lead": "Her new watercolor painting", "target": "Her new watercolor painting is like a real landscape photograph.", "accept": ["Her new watercolor painting is like a real landscape photograph.", "Her new watercolor painting is like a real landscape photograph", "her new watercolor painting is like a real landscape photograph.", "is like a real landscape photograph.", "is like a real landscape photograph"], "chips": ["Her new watercolor painting", "is", "like", "a real landscape photograph", "similar", "as", "the same"], "clue": "💡 <strong>Gợi ý:</strong> Tự gõ toàn bộ câu với động từ 'is like' và danh từ so sánh 'a real landscape photograph'.", "explain": "Bức tranh màu nước mới của cô ấy giống hệt như một bức ảnh phong cảnh thật (is like a real landscape photograph)."}, {"type": "rewrite", "patternId": "pat_different_from", "patternTitle": "Mẫu 2: S1 and S2 + be different ⟷ S1 + be different from + S2", "ruleVn": "Khi hai chủ ngữ được nói là 'different' (khác nhau), ta có thể tách chủ ngữ thứ nhất ra đầu câu, dùng 'be different from' rồi đến chủ ngữ thứ hai.", "formula": "S1 and S2 + are different  ⟷  S1 + is/are different from + S2", "id": "rw_2_1", "var": 1, "inputMode": "chips", "badge": "Level 1: Click chọn từ (Learn)", "orig": "Rock music and folk music are different.", "lead": "Rock music is different", "target": "Rock music is different from folk music.", "accept": ["Rock music is different from folk music.", "Rock music is different from folk music", "rock music is different from folk music.", "from folk music.", "from folk music"], "chips": ["Rock music", "is", "different", "from", "folk music", "to", "with", "as"], "clue": "💡 <strong>Gợi ý:</strong> Tính từ 'different' luôn đi với giới từ <strong>'from'</strong> (không dùng with/to trong tiếng Anh chuẩn lớp 7).", "explain": "Cấu trúc so sánh khác biệt: <strong>S1 + be + different from + S2</strong> (Nhạc rock thì khác biệt so với nhạc dân gian)."}, {"type": "rewrite", "patternId": "pat_different_from", "patternTitle": "Mẫu 2: S1 and S2 + be different ⟷ S1 + be different from + S2", "ruleVn": "Khi hai chủ ngữ được nói là 'different' (khác nhau), ta có thể tách chủ ngữ thứ nhất ra đầu câu, dùng 'be different from' rồi đến chủ ngữ thứ hai.", "formula": "S1 and S2 + are different  ⟷  S1 + is/are different from + S2", "id": "rw_2_2", "var": 2, "inputMode": "type", "badge": "Level 2: Tự gõ bàn phím (Practice)", "orig": "Classical music and country music are different.", "lead": "Classical music is different", "target": "Classical music is different from country music.", "accept": ["Classical music is different from country music.", "Classical music is different from country music", "classical music is different from country music.", "from country music.", "from country music"], "chips": ["Classical music", "is", "different", "from", "country music", "same as", "than"], "clue": "💡 <strong>Gợi ý:</strong> Gõ giới từ 'from' + 'country music' vào ô trả lời.", "explain": "Nhạc cổ điển thì khác biệt so với nhạc đồng quê (is different from country music)."}, {"type": "rewrite", "patternId": "pat_different_from", "patternTitle": "Mẫu 2: S1 and S2 + be different ⟷ S1 + be different from + S2", "ruleVn": "Khi hai chủ ngữ được nói là 'different' (khác nhau), ta có thể tách chủ ngữ thứ nhất ra đầu câu, dùng 'be different from' rồi đến chủ ngữ thứ hai.", "formula": "S1 and S2 + are different  ⟷  S1 + is/are different from + S2", "id": "rw_2_3", "var": 3, "inputMode": "type", "badge": "Level 3: Tự gõ cả câu (Mastery)", "orig": "Traditional oil painting and digital art are different.", "lead": "Traditional oil painting", "target": "Traditional oil painting is different from digital art.", "accept": ["Traditional oil painting is different from digital art.", "Traditional oil painting is different from digital art", "traditional oil painting is different from digital art.", "is different from digital art.", "is different from digital art"], "chips": ["Traditional oil painting", "is", "different", "from", "digital art", "not as", "to"], "clue": "💡 <strong>Gợi ý:</strong> Tự gõ toàn bộ câu: 'is different from digital art.'", "explain": "Tranh sơn dầu truyền thống khác biệt so với nghệ thuật số (is different from digital art)."}, {"type": "rewrite", "patternId": "pat_same_size_as", "patternTitle": "Mẫu 3: the same [noun] as ⟷ as [adj] as", "ruleVn": "Chuyển đổi giữa cụm danh từ chỉ kích thước/chiều dài/tuổi 'the same + N' và cụm tính từ so sánh bằng 'as + Adj + as' (size ⟷ large/big; length/duration ⟷ long; age ⟷ old).", "formula": "Both S1 & S2 are the same size  ⟷  S1 is as big/large as S2", "id": "rw_3_1", "var": 1, "inputMode": "chips", "badge": "Level 1: Click chọn từ (Learn)", "orig": "Both puppets are the same size.", "lead": "The red puppet is as", "target": "The red puppet is as big as the blue puppet.", "accept": ["The red puppet is as big as the blue puppet.", "The red puppet is as big as the blue puppet", "The red puppet is as large as the blue puppet.", "The red puppet is as large as the blue puppet", "The red puppet is as big as the other puppet.", "The red puppet is as large as the other puppet.", "big as the blue puppet.", "large as the blue puppet."], "chips": ["The red puppet", "is", "as", "big as", "large as", "the blue puppet", "the other puppet", "size", "same"], "clue": "💡 <strong>Gợi ý:</strong> 'the same size' (cùng kích cỡ) tương đương với 'as big as' hoặc 'as large as' (to/lớn bằng).", "explain": "Khi hai con rối có cùng kích cỡ, con rối đỏ to/lớn bằng con rối xanh (is as big/large as the blue puppet)."}, {"type": "rewrite", "patternId": "pat_same_size_as", "patternTitle": "Mẫu 3: the same [noun] as ⟷ as [adj] as", "ruleVn": "Chuyển đổi giữa cụm danh từ chỉ kích thước/chiều dài/tuổi 'the same + N' và cụm tính từ so sánh bằng 'as + Adj + as' (size ⟷ large/big; length/duration ⟷ long; age ⟷ old).", "formula": "Both S1 & S2 are the same size  ⟷  S1 is as big/large as S2", "id": "rw_3_2", "var": 2, "inputMode": "type", "badge": "Level 2: Tự gõ bàn phím (Practice)", "orig": "The water puppet show and the dance lasted one hour.", "lead": "The water puppet show was as", "target": "The water puppet show was as long as the dance.", "accept": ["The water puppet show was as long as the dance.", "The water puppet show was as long as the dance", "the water puppet show was as long as the dance.", "long as the dance.", "long as the dance"], "chips": ["The water puppet show", "was", "as", "long", "as", "the dance", "longer", "than", "hour"], "clue": "💡 <strong>Gợi ý:</strong> Cả hai đều kéo dài 1 giờ (cùng thời lượng), gõ: 'long as the dance.'", "explain": "Cả buổi múa rối nước và điệu nhảy đều kéo dài 1 tiếng ➔ Buổi múa rối nước dài bằng điệu nhảy (was as long as the dance)."}, {"type": "rewrite", "patternId": "pat_same_size_as", "patternTitle": "Mẫu 3: the same [noun] as ⟷ as [adj] as", "ruleVn": "Chuyển đổi giữa cụm danh từ chỉ kích thước/chiều dài/tuổi 'the same + N' và cụm tính từ so sánh bằng 'as + Adj + as' (size ⟷ large/big; length/duration ⟷ long; age ⟷ old).", "formula": "Both S1 & S2 are the same size  ⟷  S1 is as big/large as S2", "id": "rw_3_3", "var": 3, "inputMode": "type", "badge": "Level 3: Tự gõ cả câu (Mastery)", "orig": "The old art gallery is as large as the new one.", "lead": "The new art gallery is", "target": "The new art gallery is as large as the old gallery.", "accept": ["The new art gallery is as large as the old gallery.", "The new art gallery is as large as the old one.", "The new art gallery is the same size as the old gallery.", "The new art gallery is the same size as the old one.", "The new art gallery is as large as the old gallery", "The new art gallery is as large as the old one", "as large as the old gallery.", "as large as the old one."], "chips": ["The new art gallery", "is", "as large as", "the same size as", "the old gallery", "the old one", "larger"], "clue": "💡 <strong>Gợi ý:</strong> Tự gõ: 'as large as the old gallery.' hoặc 'the same size as the old gallery.'", "explain": "Phòng tranh nghệ thuật mới cũng rộng lớn bằng phòng tranh cũ (is as large as the old gallery)."}, {"type": "rewrite", "patternId": "pat_comparative_not_as", "patternTitle": "Mẫu 4: S1 + be better/more adj than S2 ⟷ S2 + be not as adj as S1", "ruleVn": "So sánh hơn chuyển sang phủ định so sánh bằng: Nếu S1 tốt hơn/hay hơn S2 thì S2 'không tốt/hay bằng' S1. Lưu ý 'better' chuyển về tính từ nguyên mẫu 'good'.", "formula": "S1 + be + more adj / better than + S2  ⟷  S2 + be + not as adj as + S1", "id": "rw_4_1", "var": 1, "inputMode": "chips", "badge": "Level 1: Click chọn từ (Learn)", "orig": "The first performance was better than the second.", "lead": "The second performance was not", "target": "The second performance was not as good as the first performance.", "accept": ["The second performance was not as good as the first performance.", "The second performance was not as good as the first one.", "The second performance was not as good as the first.", "The second performance was not as good as the first performance", "The second performance was not as good as the first one", "as good as the first performance.", "as good as the first one."], "chips": ["The second performance", "was not", "as good as", "the first performance", "the first one", "better", "than", "as well as"], "clue": "💡 <strong>Gợi ý:</strong> 'better than' (tốt hơn) khi chuyển sang phủ định so sánh bằng phải dùng tính từ gốc: <strong>'not as good as'</strong> (không tốt bằng).", "explain": "Tiết mục thứ nhất hay hơn tiết mục thứ hai ➔ Tiết mục thứ hai không hay bằng tiết mục thứ nhất (was not as good as the first performance)."}, {"type": "rewrite", "patternId": "pat_comparative_not_as", "patternTitle": "Mẫu 4: S1 + be better/more adj than S2 ⟷ S2 + be not as adj as S1", "ruleVn": "So sánh hơn chuyển sang phủ định so sánh bằng: Nếu S1 tốt hơn/hay hơn S2 thì S2 'không tốt/hay bằng' S1. Lưu ý 'better' chuyển về tính từ nguyên mẫu 'good'.", "formula": "S1 + be + more adj / better than + S2  ⟷  S2 + be + not as adj as + S1", "id": "rw_4_2", "var": 2, "inputMode": "type", "badge": "Level 2: Tự gõ bàn phím (Practice)", "orig": "The live concert was more exciting than the film.", "lead": "The film was not as", "target": "The film was not as exciting as the concert.", "accept": ["The film was not as exciting as the concert.", "The film was not as exciting as the live concert.", "The film was not as exciting as the concert", "the film was not as exciting as the concert.", "exciting as the concert.", "exciting as the live concert."], "chips": ["The film", "was not as", "exciting as", "the concert", "the live concert", "more", "than"], "clue": "💡 <strong>Gợi ý:</strong> Tự gõ: 'exciting as the concert.'", "explain": "Buổi hòa nhạc sôi động hơn bộ phim ➔ Bộ phim không sôi động bằng buổi hòa nhạc (was not as exciting as the concert)."}, {"type": "rewrite", "patternId": "pat_comparative_not_as", "patternTitle": "Mẫu 4: S1 + be better/more adj than S2 ⟷ S2 + be not as adj as S1", "ruleVn": "So sánh hơn chuyển sang phủ định so sánh bằng: Nếu S1 tốt hơn/hay hơn S2 thì S2 'không tốt/hay bằng' S1. Lưu ý 'better' chuyển về tính từ nguyên mẫu 'good'.", "formula": "S1 + be + more adj / better than + S2  ⟷  S2 + be + not as adj as + S1", "id": "rw_4_3", "var": 3, "inputMode": "type", "badge": "Level 3: Tự gõ cả câu (Mastery)", "orig": "This oil painting is more colourful than that one.", "lead": "That painting is not as", "target": "That painting is not as colourful as this painting.", "accept": ["That painting is not as colourful as this painting.", "That painting is not as colourful as this one.", "That painting is not as colourful as this oil painting.", "That painting is not as colourful as this painting", "That painting is not as colourful as this one", "colourful as this painting.", "colourful as this one."], "chips": ["That painting", "is not as", "colourful as", "this painting", "this one", "more", "colourful than"], "clue": "💡 <strong>Gợi ý:</strong> Gõ: 'colourful as this painting.' (hoặc 'this one.')", "explain": "Bức tranh kia không rực rỡ sắc màu bằng bức tranh này (is not as colourful as this painting/this one)."}, {"type": "rewrite", "patternId": "pat_not_same_different", "patternTitle": "Mẫu 5: not the same as ⟷ different from", "ruleVn": "'not the same as' (không giống với) hoàn toàn đồng nghĩa với 'different from' (khác biệt so với).", "formula": "S1 + be + not the same as + S2  ⟷  S1 + be + different from + S2", "id": "rw_5_1", "var": 1, "inputMode": "chips", "badge": "Level 1: Click chọn từ (Learn)", "orig": "A sculpture is not the same as a painting.", "lead": "A sculpture is different", "target": "A sculpture is different from a painting.", "accept": ["A sculpture is different from a painting.", "A sculpture is different from a painting", "a sculpture is different from a painting.", "from a painting.", "from a painting"], "chips": ["A sculpture", "is", "different", "from", "a painting", "the same as", "with", "to"], "clue": "💡 <strong>Gợi ý:</strong> Thay 'is not the same as' bằng cụm 'is different from'.", "explain": "Tượng điêu khắc không giống tranh vẽ ➔ Tượng điêu khắc khác biệt so với tranh vẽ (is different from a painting)."}, {"type": "rewrite", "patternId": "pat_not_same_different", "patternTitle": "Mẫu 5: not the same as ⟷ different from", "ruleVn": "'not the same as' (không giống với) hoàn toàn đồng nghĩa với 'different from' (khác biệt so với).", "formula": "S1 + be + not the same as + S2  ⟷  S1 + be + different from + S2", "id": "rw_5_2", "var": 2, "inputMode": "type", "badge": "Level 2: Tự gõ bàn phím (Practice)", "orig": "Pop music is different from folk music.", "lead": "Pop music is not", "target": "Pop music is not the same as folk music.", "accept": ["Pop music is not the same as folk music.", "Pop music is not the same as folk music", "pop music is not the same as folk music.", "the same as folk music.", "the same as folk music"], "chips": ["Pop music", "is not", "the same as", "folk music", "different from", "like", "as"], "clue": "💡 <strong>Gợi ý:</strong> Tự gõ: 'the same as folk music.'", "explain": "Nhạc pop khác với nhạc dân gian ➔ Nhạc pop không giống với nhạc dân gian (is not the same as folk music)."}, {"type": "rewrite", "patternId": "pat_not_same_different", "patternTitle": "Mẫu 5: not the same as ⟷ different from", "ruleVn": "'not the same as' (không giống với) hoàn toàn đồng nghĩa với 'different from' (khác biệt so với).", "formula": "S1 + be + not the same as + S2  ⟷  S1 + be + different from + S2", "id": "rw_5_3", "var": 3, "inputMode": "type", "badge": "Level 3: Tự gõ cả câu (Mastery)", "orig": "A live theatre performance is not the same as watching a recorded video.", "lead": "A live theatre performance", "target": "A live theatre performance is different from watching a recorded video.", "accept": ["A live theatre performance is different from watching a recorded video.", "A live theatre performance is different from watching a recorded video", "a live theatre performance is different from watching a recorded video.", "is different from watching a recorded video.", "is different from watching a recorded video"], "chips": ["A live theatre performance", "is", "different from", "watching a recorded video", "not the same as", "to"], "clue": "💡 <strong>Gợi ý:</strong> Tự gõ cả câu với cụm 'is different from watching a recorded video.'", "explain": "Buổi biểu diễn sân khấu trực tiếp khác biệt so với việc xem video ghi hình (is different from watching a recorded video)."}, {"type": "rewrite", "patternId": "pat_short_adj_comp", "patternTitle": "Mẫu 6: adj-er than ⟷ not as adj as", "ruleVn": "Với tính từ ngắn (quieter, cheaper, older), khi chuyển sang phủ định so sánh bằng, ta bỏ đuôi '-er' để đưa về tính từ nguyên mẫu: 'not as quiet/cheap/old as'.", "formula": "S1 + be + adj-er + than + S2  ⟷  S2 + be + not as + adj + as + S1", "id": "rw_6_1", "var": 1, "inputMode": "chips", "badge": "Level 1: Click chọn từ (Learn)", "orig": "The gallery is quieter than the theatre.", "lead": "The theatre is not as", "target": "The theatre is not as quiet as the gallery.", "accept": ["The theatre is not as quiet as the gallery.", "The theatre is not as quiet as the gallery", "the theatre is not as quiet as the gallery.", "quiet as the gallery.", "quiet as the gallery"], "chips": ["The theatre", "is not as", "quiet as", "the gallery", "quieter", "than", "quiet than"], "clue": "💡 <strong>Gợi ý:</strong> 'quieter than' (yên tĩnh hơn) chuyển sang phủ định là 'not as quiet as' (bỏ đuôi -er).", "explain": "Phòng trưng bày yên tĩnh hơn nhà hát ➔ Nhà hát không yên tĩnh bằng phòng trưng bày (is not as quiet as the gallery)."}, {"type": "rewrite", "patternId": "pat_short_adj_comp", "patternTitle": "Mẫu 6: adj-er than ⟷ not as adj as", "ruleVn": "Với tính từ ngắn (quieter, cheaper, older), khi chuyển sang phủ định so sánh bằng, ta bỏ đuôi '-er' để đưa về tính từ nguyên mẫu: 'not as quiet/cheap/old as'.", "formula": "S1 + be + adj-er + than + S2  ⟷  S2 + be + not as + adj + as + S1", "id": "rw_6_2", "var": 2, "inputMode": "type", "badge": "Level 2: Tự gõ bàn phím (Practice)", "orig": "The art museum ticket is cheaper than the concert ticket.", "lead": "The concert ticket is not as", "target": "The concert ticket is not as cheap as the art museum ticket.", "accept": ["The concert ticket is not as cheap as the art museum ticket.", "The concert ticket is not as cheap as the art museum ticket", "the concert ticket is not as cheap as the art museum ticket.", "cheap as the art museum ticket.", "cheap as the art museum ticket"], "chips": ["The concert ticket", "is not as", "cheap as", "the art museum ticket", "cheaper than", "expensive"], "clue": "💡 <strong>Gợi ý:</strong> Tự gõ: 'cheap as the art museum ticket.'", "explain": "Vé bảo tàng rẻ hơn vé hòa nhạc ➔ Vé hòa nhạc không rẻ bằng vé bảo tàng (is not as cheap as the art museum ticket)."}, {"type": "rewrite", "patternId": "pat_short_adj_comp", "patternTitle": "Mẫu 6: adj-er than ⟷ not as adj as", "ruleVn": "Với tính từ ngắn (quieter, cheaper, older), khi chuyển sang phủ định so sánh bằng, ta bỏ đuôi '-er' để đưa về tính từ nguyên mẫu: 'not as quiet/cheap/old as'.", "formula": "S1 + be + adj-er + than + S2  ⟷  S2 + be + not as + adj + as + S1", "id": "rw_6_3", "var": 3, "inputMode": "type", "badge": "Level 3: Tự gõ cả câu (Mastery)", "orig": "Traditional water puppetry is older than modern cinema.", "lead": "Modern cinema is not", "target": "Modern cinema is not as old as traditional water puppetry.", "accept": ["Modern cinema is not as old as traditional water puppetry.", "Modern cinema is not as old as traditional water puppetry", "modern cinema is not as old as traditional water puppetry.", "as old as traditional water puppetry.", "as old as traditional water puppetry"], "chips": ["Modern cinema", "is not as", "old as", "traditional water puppetry", "older than", "as old"], "clue": "💡 <strong>Gợi ý:</strong> Tự gõ cả câu: 'as old as traditional water puppetry.'", "explain": "Múa rối nước truyền thống lâu đời hơn điện ảnh hiện đại ➔ Điện ảnh hiện đại không lâu đời bằng múa rối nước (is not as old as traditional water puppetry)."}, {"type": "rewrite", "patternId": "pat_prefer_to", "patternTitle": "Mẫu 7: like ... more than ... ⟷ prefer ... to ...", "ruleVn": "Cấu trúc diễn đạt sở thích hơn: 'like A more than B' tương đương 'prefer A to B'. Chú ý giới từ bắt buộc là 'to' (không dùng than).", "formula": "S + like + A + more than + B  ⟷  S + prefer + A + to + B", "id": "rw_7_1", "var": 1, "inputMode": "chips", "badge": "Level 1: Click chọn từ (Learn)", "orig": "I like folk music more than pop music.", "lead": "I prefer", "target": "I prefer folk music to pop music.", "accept": ["I prefer folk music to pop music.", "I prefer folk music to pop music", "i prefer folk music to pop music.", "folk music to pop music.", "folk music to pop music"], "chips": ["I prefer", "folk music", "to", "pop music", "than", "more than", "like"], "clue": "💡 <strong>Gợi ý:</strong> Đi sau 'prefer' là danh từ yêu thích hơn + giới từ <strong>'to'</strong> + danh từ ít thích hơn.", "explain": "Cấu trúc chuẩn: <strong>prefer + Noun 1 + to + Noun 2</strong> (Tôi thích nhạc dân gian hơn nhạc pop)."}, {"type": "rewrite", "patternId": "pat_prefer_to", "patternTitle": "Mẫu 7: like ... more than ... ⟷ prefer ... to ...", "ruleVn": "Cấu trúc diễn đạt sở thích hơn: 'like A more than B' tương đương 'prefer A to B'. Chú ý giới từ bắt buộc là 'to' (không dùng than).", "formula": "S + like + A + more than + B  ⟷  S + prefer + A + to + B", "id": "rw_7_2", "var": 2, "inputMode": "type", "badge": "Level 2: Tự gõ bàn phím (Practice)", "orig": "Minh likes playing the guitar more than playing the piano.", "lead": "Minh prefers", "target": "Minh prefers playing the guitar to playing the piano.", "accept": ["Minh prefers playing the guitar to playing the piano.", "Minh prefers playing the guitar to playing the piano", "minh prefers playing the guitar to playing the piano.", "playing the guitar to playing the piano.", "playing the guitar to playing the piano"], "chips": ["Minh prefers", "playing the guitar", "to", "playing the piano", "than", "more than"], "clue": "💡 <strong>Gợi ý:</strong> Tự gõ: 'playing the guitar to playing the piano.' (chú ý dùng giới từ 'to').", "explain": "Minh thích chơi đàn guitar hơn chơi piano (prefers playing the guitar to playing the piano)."}, {"type": "rewrite", "patternId": "pat_prefer_to", "patternTitle": "Mẫu 7: like ... more than ... ⟷ prefer ... to ...", "ruleVn": "Cấu trúc diễn đạt sở thích hơn: 'like A more than B' tương đương 'prefer A to B'. Chú ý giới từ bắt buộc là 'to' (không dùng than).", "formula": "S + like + A + more than + B  ⟷  S + prefer + A + to + B", "id": "rw_7_3", "var": 3, "inputMode": "type", "badge": "Level 3: Tự gõ cả câu (Mastery)", "orig": "My parents like watching water puppetry more than watching action films.", "lead": "My parents prefer", "target": "My parents prefer watching water puppetry to watching action films.", "accept": ["My parents prefer watching water puppetry to watching action films.", "My parents prefer watching water puppetry to watching action films", "my parents prefer watching water puppetry to watching action films.", "watching water puppetry to watching action films.", "watching water puppetry to watching action films"], "chips": ["My parents prefer", "watching water puppetry", "to", "watching action films", "than", "more"], "clue": "💡 <strong>Gợi ý:</strong> Tự gõ: 'watching water puppetry to watching action films.'", "explain": "Bố mẹ tôi thích xem múa rối nước hơn xem phim hành động (prefer watching water puppetry to watching action films)."}, {"type": "wordform", "root": "EXHIBIT", "family": "exhibit (v) ➔ exhibition (n)", "meaningVn": "Trưng bày / Triển lãm", "id": "wf_1_1", "var": 1, "inputMode": "chips", "badge": "Level 1: Trắc nghiệm (Learn)", "sent": "The museum is holding a photography ______________ this weekend. (EXHIBIT)", "ans": "exhibition", "options": ["exhibition", "exhibitor", "exhibiting", "exhibit"], "clue": "💡 <strong>Dấu hiệu:</strong> Sau mạo từ 'a' và danh từ bổ nghĩa 'photography', ta cần một <strong>danh từ số ít</strong> chỉ sự kiện/cuộc triển lãm.", "explain": "Photography exhibition: cuộc triển lãm ảnh nghệ thuật (danh từ đếm được số ít)."}, {"type": "wordform", "root": "EXHIBIT", "family": "exhibit (v) ➔ exhibition (n)", "meaningVn": "Trưng bày / Triển lãm", "id": "wf_1_2", "var": 2, "inputMode": "type", "badge": "Level 2: Tự gõ từ đúng (Practice)", "sent": "Many valuable historical paintings are currently on ______________ at the national gallery. (EXHIBIT)", "ans": "exhibition", "options": ["exhibition", "exhibits", "exhibitor", "exhibited"], "clue": "💡 <strong>Cụm từ cố định:</strong> 'on exhibition' có nghĩa là 'đang được trưng bày / triển lãm'.", "explain": "Cụm thành ngữ: <strong>to be on exhibition</strong> (đang được triển lãm trước công chúng)."}, {"type": "wordform", "root": "EXHIBIT", "family": "exhibit (v) ➔ exhibition (n)", "meaningVn": "Trưng bày / Triển lãm", "id": "wf_1_3", "var": 3, "inputMode": "type", "badge": "Level 3: Tự gõ từ đúng (Mastery)", "sent": "The city museum will ______________ ancient royal musical instruments next month. (EXHIBIT)", "ans": "exhibit", "options": ["exhibit", "exhibition", "exhibits", "exhibiting"], "clue": "💡 <strong>Ngữ pháp:</strong> Đứng sau trợ động từ tương lai 'will' cần một <strong>động từ nguyên mẫu</strong> (infinitive).", "explain": "Sau 'will' dùng động từ nguyên mẫu: <strong>will exhibit</strong> (sẽ trưng bày các nhạc cụ cung đình cổ)."}, {"type": "wordform", "root": "PHOTOGRAPH", "family": "photograph (n/v) ➔ photographer (n-person) ➔ photography (n-art)", "meaningVn": "Chụp ảnh / Nhiếp ảnh gia / Bức ảnh", "id": "wf_2_1", "var": 1, "inputMode": "chips", "badge": "Level 1: Trắc nghiệm (Learn)", "sent": "She wants to become a professional ______________ for a travel magazine. (PHOTOGRAPH)", "ans": "photographer", "options": ["photographer", "photography", "photographic", "photographs"], "clue": "💡 <strong>Dấu hiệu:</strong> Sau cụm 'become a professional + [Noun]' ta cần một <strong>danh từ chỉ người</strong> (nhiếp ảnh gia).", "explain": "Photographer (/fəˈtɒɡrəfər/): nhiếp ảnh gia chuyên nghiệp."}, {"type": "wordform", "root": "PHOTOGRAPH", "family": "photograph (n/v) ➔ photographer (n-person) ➔ photography (n-art)", "meaningVn": "Chụp ảnh / Nhiếp ảnh gia / Bức ảnh", "id": "wf_2_2", "var": 2, "inputMode": "type", "badge": "Level 2: Tự gõ từ đúng (Practice)", "sent": "Taking landscape ______________ requires patience and good natural lighting. (PHOTOGRAPH)", "ans": "photographs", "options": ["photographs", "photographer", "photographing", "photographically"], "clue": "💡 <strong>Dấu hiệu:</strong> Đi sau danh từ 'landscape' để chỉ những bức ảnh phong cảnh số nhiều (thêm -s).", "explain": "Landscape photographs: những bức ảnh chụp phong cảnh thiên nhiên."}, {"type": "wordform", "root": "PHOTOGRAPH", "family": "photograph (n/v) ➔ photographer (n-person) ➔ photography (n-art)", "meaningVn": "Chụp ảnh / Nhiếp ảnh gia / Bức ảnh", "id": "wf_2_3", "var": 3, "inputMode": "type", "badge": "Level 3: Tự gõ từ đúng (Mastery)", "sent": "My brother joined the school ______________ club to learn how to edit digital pictures. (PHOTOGRAPH)", "ans": "photography", "options": ["photography", "photographer", "photographs", "photographic"], "clue": "💡 <strong>Dấu hiệu:</strong> Danh từ chỉ bộ môn/ngành nghệ thuật nhiếp ảnh đứng trước danh từ 'club'.", "explain": "Photography club: câu lạc bộ nhiếp ảnh (ngành nghệ thuật chụp ảnh)."}, {"type": "wordform", "root": "PORTRAY", "family": "portray (v) ➔ portrayal / portrait (n)", "meaningVn": "Khắc họa / Bức tranh chân dung", "id": "wf_3_1", "var": 1, "inputMode": "chips", "badge": "Level 1: Trắc nghiệm (Learn)", "sent": "The painting is an accurate ______________ of peaceful rural village life. (PORTRAY)", "ans": "portrayal", "options": ["portrayal", "portrait", "portraying", "portrays"], "clue": "💡 <strong>Dấu hiệu:</strong> Sau tính từ 'accurate' cần một danh từ chỉ sự khắc họa / bức tranh miêu tả (portrayal).", "explain": "Portrayal (/pɔːˈtreɪəl/): sự khắc họa, miêu tả chân thực bức tranh cuộc sống làng quê."}, {"type": "wordform", "root": "PORTRAY", "family": "portray (v) ➔ portrayal / portrait (n)", "meaningVn": "Khắc họa / Bức tranh chân dung", "id": "wf_3_2", "var": 2, "inputMode": "type", "badge": "Level 2: Tự gõ từ đúng (Practice)", "sent": "The artist drew a stunning ______________ of Uncle Ho smiling with children. (PORTRAY)", "ans": "portrait", "options": ["portrait", "portrayal", "portraying", "portray"], "clue": "💡 <strong>Dấu hiệu:</strong> Cần danh từ chỉ bức tranh vẽ chân dung con người sau 'a stunning ...'.", "explain": "Portrait (/ˈpɔːtrət/): bức tranh vẽ chân dung (khuôn mặt nhân vật)."}, {"type": "wordform", "root": "PORTRAY", "family": "portray (v) ➔ portrayal / portrait (n)", "meaningVn": "Khắc họa / Bức tranh chân dung", "id": "wf_3_3", "var": 3, "inputMode": "type", "badge": "Level 3: Tự gõ từ đúng (Mastery)", "sent": "This traditional folk song vividly ______________ the hard life of ancient farmers. (PORTRAY)", "ans": "portrays", "options": ["portrays", "portray", "portrayal", "portrayed"], "clue": "💡 <strong>Ngữ pháp:</strong> Chủ ngữ 'This traditional folk song' là danh từ số ít, đi sau trạng từ 'vividly' cần <strong>động từ chia thì hiện tại đơn thêm -s</strong>.", "explain": "Động từ số ít ở hiện tại đơn: <strong>portrays</strong> (khắc họa một cách sinh động)."}, {"type": "wordform", "root": "PUPPET", "family": "puppet (n) ➔ puppeteer (n-person) ➔ puppetry (n-art)", "meaningVn": "Con rối / Nghệ nhân múa rối / Nghệ thuật múa rối", "id": "wf_4_1", "var": 1, "inputMode": "chips", "badge": "Level 1: Trắc nghiệm (Learn)", "sent": "The water ______________ controlled the wooden figures skillfully behind the bamboo screen. (PUPPET)", "ans": "puppeteers", "options": ["puppeteers", "puppetry", "puppets", "puppeteer"], "clue": "💡 <strong>Dấu hiệu:</strong> Cần <strong>danh từ chỉ người số nhiều</strong> làm chủ ngữ thực hiện hành động 'controlled' (nghệ nhân điều khiển rối).", "explain": "Puppeteers (/ˌpʌpɪˈtɪəz/): các nghệ nhân múa rối (đứng sau mành tre điều khiển con rối)."}, {"type": "wordform", "root": "PUPPET", "family": "puppet (n) ➔ puppeteer (n-person) ➔ puppetry (n-art)", "meaningVn": "Con rối / Nghệ nhân múa rối / Nghệ thuật múa rối", "id": "wf_4_2", "var": 2, "inputMode": "type", "badge": "Level 2: Tự gõ từ đúng (Practice)", "sent": "Water ______________ is a unique traditional theatre art originating in northern Viet Nam. (PUPPET)", "ans": "puppetry", "options": ["puppetry", "puppeteers", "puppets", "puppet"], "clue": "💡 <strong>Dấu hiệu:</strong> Cần danh từ không đếm được chỉ môn nghệ thuật múa rối làm chủ ngữ số ít (đi với động từ 'is').", "explain": "Water puppetry (/ˈpʌpɪtri/): nghệ thuật múa rối nước truyền thống của Việt Nam."}, {"type": "wordform", "root": "PUPPET", "family": "puppet (n) ➔ puppeteer (n-person) ➔ puppetry (n-art)", "meaningVn": "Con rối / Nghệ nhân múa rối / Nghệ thuật múa rối", "id": "wf_4_3", "var": 3, "inputMode": "type", "badge": "Level 3: Tự gõ từ đúng (Mastery)", "sent": "These colourful string ______________ were hand-carved from fig wood. (PUPPET)", "ans": "puppets", "options": ["puppets", "puppetry", "puppeteers", "puppet"], "clue": "💡 <strong>Dấu hiệu:</strong> Đi sau từ chỉ định số nhiều 'These colourful string ... were' cần danh từ con rối số nhiều.", "explain": "String puppets: những con rối dây (được chạm khắc thủ công từ gỗ sung)."}, {"type": "wordform", "root": "SCULPT", "family": "sculpt (v) ➔ sculpture (n-work) ➔ sculptor (n-person)", "meaningVn": "Điêu khắc / Tác phẩm điêu khắc / Nhà điêu khắc", "id": "wf_5_1", "var": 1, "inputMode": "chips", "badge": "Level 1: Trắc nghiệm (Learn)", "sent": "The marble ______________ was carefully created by a young Vietnamese artist. (SCULPT)", "ans": "sculpture", "options": ["sculpture", "sculptor", "sculpted", "sculpting"], "clue": "💡 <strong>Dấu hiệu:</strong> Cần <strong>danh từ chỉ tác phẩm vật thể</strong> (bức tượng/tác phẩm điêu khắc) đứng sau tính từ chất liệu 'marble' (đá cẩm thạch).", "explain": "Marble sculpture (/ˈskʌlptʃər/): bức tượng điêu khắc bằng đá cẩm thạch."}, {"type": "wordform", "root": "SCULPT", "family": "sculpt (v) ➔ sculpture (n-work) ➔ sculptor (n-person)", "meaningVn": "Điêu khắc / Tác phẩm điêu khắc / Nhà điêu khắc", "id": "wf_5_2", "var": 2, "inputMode": "type", "badge": "Level 2: Tự gõ từ đúng (Practice)", "sent": "Auguste Rodin was a world-renowned French ______________ who created 'The Thinker'. (SCULPT)", "ans": "sculptor", "options": ["sculptor", "sculpture", "sculpting", "sculptures"], "clue": "💡 <strong>Dấu hiệu:</strong> Cần <strong>danh từ chỉ người</strong> (nhà điêu khắc) sau cụm 'French ... who created'.", "explain": "Sculptor (/ˈskʌlptər/): nhà điêu khắc / nghệ nhân tạc tượng."}, {"type": "wordform", "root": "SCULPT", "family": "sculpt (v) ➔ sculpture (n-work) ➔ sculptor (n-person)", "meaningVn": "Điêu khắc / Tác phẩm điêu khắc / Nhà điêu khắc", "id": "wf_5_3", "var": 3, "inputMode": "type", "badge": "Level 3: Tự gõ từ đúng (Mastery)", "sent": "The skilled craftsman ______________ a majestic dragon out of a single block of wood yesterday. (SCULPT)", "ans": "sculpted", "options": ["sculpted", "sculpture", "sculptor", "sculpting"], "clue": "💡 <strong>Ngữ pháp:</strong> Có trạng từ thời gian quá khứ 'yesterday', cần <strong>động từ ở thì quá khứ đơn (V-ed)</strong>.", "explain": "Động từ quá khứ đơn: <strong>sculpted</strong> (đã điêu khắc/tạo tác một con rồng uy nghiêm)."}, {"type": "wordform", "root": "ART", "family": "art (n) ➔ artist (n-person) ➔ artistic (adj) ➔ artistically (adv)", "meaningVn": "Nghệ thuật / Nghệ sĩ / Thuộc nghệ thuật / Khéo léo", "id": "wf_6_1", "var": 1, "inputMode": "chips", "badge": "Level 1: Trắc nghiệm (Learn)", "sent": "The students showed remarkable ______________ talent during the annual talent show. (ART)", "ans": "artistic", "options": ["artistic", "artist", "artistically", "arts"], "clue": "💡 <strong>Dấu hiệu:</strong> Đứng trước danh từ 'talent' cần một <strong>tính từ</strong> để bổ nghĩa (tài năng nghệ thuật).", "explain": "Artistic talent: năng khiếu / tài năng thiên bẩm về nghệ thuật."}, {"type": "wordform", "root": "ART", "family": "art (n) ➔ artist (n-person) ➔ artistic (adj) ➔ artistically (adv)", "meaningVn": "Nghệ thuật / Nghệ sĩ / Thuộc nghệ thuật / Khéo léo", "id": "wf_6_2", "var": 2, "inputMode": "type", "badge": "Level 2: Tự gõ từ đúng (Practice)", "sent": "Picasso and Da Vinci are regarded as two of the greatest ______________ in human history. (ART)", "ans": "artists", "options": ["artists", "artistic", "artist", "artistry"], "clue": "💡 <strong>Dấu hiệu:</strong> Sau 'two of the greatest ...' cần <strong>danh từ chỉ người số nhiều</strong> (những người nghệ sĩ/họa sĩ).", "explain": "Greatest artists: những nghệ sĩ / danh họa vĩ đại nhất."}, {"type": "wordform", "root": "ART", "family": "art (n) ➔ artist (n-person) ➔ artistic (adj) ➔ artistically (adv)", "meaningVn": "Nghệ thuật / Nghệ sĩ / Thuộc nghệ thuật / Khéo léo", "id": "wf_6_3", "var": 3, "inputMode": "type", "badge": "Level 3: Tự gõ từ đúng (Mastery)", "sent": "The festival stage was ______________ decorated with traditional bamboo lanterns. (ART)", "ans": "artistically", "options": ["artistically", "artistic", "artist", "arts"], "clue": "💡 <strong>Dấu hiệu:</strong> Đứng trước phân từ II 'decorated' (bị động) cần một <strong>trạng từ</strong> chỉ cách thức.", "explain": "Trạng từ: <strong>artistically decorated</strong> (được trang trí một cách đầy tính nghệ thuật)."}, {"type": "wordform", "root": "BEAUTY", "family": "beauty (n) ➔ beautiful (adj) ➔ beautifully (adv)", "meaningVn": "Vẻ đẹp / Xinh đẹp / Một cách tuyệt vời", "id": "wf_7_1", "var": 1, "inputMode": "chips", "badge": "Level 1: Trắc nghiệm (Learn)", "sent": "The young violinist played the final concerto movement ______________. (BEAUTY)", "ans": "beautifully", "options": ["beautifully", "beautiful", "beauty", "beautify"], "clue": "💡 <strong>Dấu hiệu:</strong> Đứng sau động từ 'played' và tân ngữ, cần một <strong>trạng từ</strong> miêu tả cách thức chơi đàn.", "explain": "Trạng từ bổ nghĩa cho động từ: <strong>played beautifully</strong> (chơi đàn một cách vô cùng truyền cảm, tuyệt vời)."}, {"type": "wordform", "root": "BEAUTY", "family": "beauty (n) ➔ beautiful (adj) ➔ beautifully (adv)", "meaningVn": "Vẻ đẹp / Xinh đẹp / Một cách tuyệt vời", "id": "wf_7_2", "var": 2, "inputMode": "type", "badge": "Level 2: Tự gõ từ đúng (Practice)", "sent": "She wore a ______________ traditional 'Ao Dai' to the music awards gala. (BEAUTY)", "ans": "beautiful", "options": ["beautiful", "beautifully", "beauty", "beauties"], "clue": "💡 <strong>Dấu hiệu:</strong> Đứng trước cụm danh từ 'traditional Ao Dai' cần một <strong>tính từ</strong> miêu tả vẻ ngoài.", "explain": "A beautiful traditional Ao Dai: một tà áo dài truyền thống tuyệt đẹp."}, {"type": "wordform", "root": "BEAUTY", "family": "beauty (n) ➔ beautiful (adj) ➔ beautifully (adv)", "meaningVn": "Vẻ đẹp / Xinh đẹp / Một cách tuyệt vời", "id": "wf_7_3", "var": 3, "inputMode": "type", "badge": "Level 3: Tự gõ từ đúng (Mastery)", "sent": "The natural ______________ of Ha Long Bay has inspired countless landscape painters. (BEAUTY)", "ans": "beauty", "options": ["beauty", "beautiful", "beautifully", "beautify"], "clue": "💡 <strong>Dấu hiệu:</strong> Đứng sau tính từ 'natural' và đứng trước giới từ 'of' cần một <strong>danh từ</strong>.", "explain": "Natural beauty: vẻ đẹp tự nhiên / vẻ đẹp thiên nhiên."}, {"type": "wordform", "root": "DIFFER", "family": "differ (v) ➔ different (adj) ➔ difference (n) ➔ differently (adv)", "meaningVn": "Khác biệt / Sự khác nhau / Khác", "id": "wf_8_1", "var": 1, "inputMode": "chips", "badge": "Level 1: Trắc nghiệm (Learn)", "sent": "The two musical instruments are completely ______________ from each other in sound and shape. (DIFFER)", "ans": "different", "options": ["different", "difference", "differently", "differ"], "clue": "💡 <strong>Dấu hiệu:</strong> Sau to be 'are' và trạng từ 'completely', đi kèm giới từ 'from' cần một <strong>tính từ</strong>.", "explain": "Are completely different from: hoàn toàn khác biệt so với đối tượng còn lại."}, {"type": "wordform", "root": "DIFFER", "family": "differ (v) ➔ different (adj) ➔ difference (n) ➔ differently (adv)", "meaningVn": "Khác biệt / Sự khác nhau / Khác", "id": "wf_8_2", "var": 2, "inputMode": "type", "badge": "Level 2: Tự gõ từ đúng (Practice)", "sent": "Can you point out the main ______________ between a violin and a cello? (DIFFER)", "ans": "difference", "options": ["difference", "different", "differently", "differences"], "clue": "💡 <strong>Dấu hiệu:</strong> Sau mạo từ 'the' và tính từ 'main', trước 'between' cần một <strong>danh từ số ít</strong>.", "explain": "The main difference: sự khác biệt chính giữa hai loại nhạc cụ."}, {"type": "wordform", "root": "DIFFER", "family": "differ (v) ➔ different (adj) ➔ difference (n) ➔ differently (adv)", "meaningVn": "Khác biệt / Sự khác nhau / Khác", "id": "wf_8_3", "var": 3, "inputMode": "type", "badge": "Level 3: Tự gõ từ đúng (Mastery)", "sent": "Musicians interpret the same classical symphony ______________ depending on their emotion. (DIFFER)", "ans": "differently", "options": ["differently", "different", "difference", "differ"], "clue": "💡 <strong>Dấu hiệu:</strong> Đứng sau động từ 'interpret' (diễn tấu/thể hiện) và tân ngữ cần một <strong>trạng từ</strong> chỉ cách thức.", "explain": "Interpret the symphony differently: diễn giải và chơi bản giao hưởng theo những cách khác nhau."}];
+var REWRITE_PATTERNS = [{"id": "pat_similar_like", "title": "Mẫu 1: similar to ⟷ like", "formula": "S1 + be + similar to + S2  ⟷  S1 + be + like + S2", "rule_vn": "Cụm 'similar to' (tương tự như) có thể thay thế bằng giới từ 'like' (giống như) khi so sánh nét tương đồng giữa 2 đối tượng.", "questions": [{"id": "rw_1_1", "var": 1, "inputMode": "chips", "badge": "Level 1: Click chọn từ (Learn)", "orig": "This portrait is similar to that photograph.", "lead": "This portrait is like", "target": "This portrait is like that photograph.", "accept": ["This portrait is like that photograph.", "This portrait is like that photograph", "this portrait is like that photograph.", "this portrait is like that photograph", "that photograph.", "that photograph"], "chips": ["This portrait", "is", "like", "that photograph", "similar to", "as", "painting"], "clue": "💡 <strong>Gợi ý:</strong> Thay thế cụm từ <em>'is similar to'</em> bằng <em>'is like'</em>. Giữ nguyên đối tượng so sánh phía sau là <em>'that photograph'</em>.", "explain": "Trong tiếng Anh lớp 7 Unit 4, cấu trúc <strong>be + like + Noun</strong> mang nghĩa tương đương với <strong>be + similar to + Noun</strong> (giống như / tương tự như)."}, {"id": "rw_1_2", "var": 2, "inputMode": "type", "badge": "Level 2: Tự gõ bàn phím (Practice)", "orig": "The rhythm of modern pop is similar to electronic dance music.", "lead": "The rhythm of modern pop is like", "target": "The rhythm of modern pop is like electronic dance music.", "accept": ["The rhythm of modern pop is like electronic dance music.", "The rhythm of modern pop is like electronic dance music", "the rhythm of modern pop is like electronic dance music.", "electronic dance music.", "electronic dance music"], "chips": ["The rhythm of modern pop", "is", "like", "electronic dance music", "similar to", "different from"], "clue": "💡 <strong>Gợi ý:</strong> Chuyển 'is similar to' thành 'is like' và tự gõ cụm từ 'electronic dance music'.", "explain": "Ta thay 'is similar to' bằng 'is like' để diễn tả nhịp điệu của nhạc pop hiện đại giống với nhạc điện tử khiêu vũ."}, {"id": "rw_1_3", "var": 3, "inputMode": "type", "badge": "Level 3: Tự gõ cả câu (Mastery)", "orig": "Her new watercolor painting is similar to a real landscape photograph.", "lead": "Her new watercolor painting", "target": "Her new watercolor painting is like a real landscape photograph.", "accept": ["Her new watercolor painting is like a real landscape photograph.", "Her new watercolor painting is like a real landscape photograph", "her new watercolor painting is like a real landscape photograph.", "is like a real landscape photograph.", "is like a real landscape photograph"], "chips": ["Her new watercolor painting", "is", "like", "a real landscape photograph", "similar", "as", "the same"], "clue": "💡 <strong>Gợi ý:</strong> Tự gõ toàn bộ câu với động từ 'is like' và danh từ so sánh 'a real landscape photograph'.", "explain": "Bức tranh màu nước mới của cô ấy giống hệt như một bức ảnh phong cảnh thật (is like a real landscape photograph)."}]}, {"id": "pat_different_from", "title": "Mẫu 2: S1 and S2 + be different ⟷ S1 + be different from + S2", "formula": "S1 and S2 + are different  ⟷  S1 + is/are different from + S2", "rule_vn": "Khi hai chủ ngữ được nói là 'different' (khác nhau), ta có thể tách chủ ngữ thứ nhất ra đầu câu, dùng 'be different from' rồi đến chủ ngữ thứ hai.", "questions": [{"id": "rw_2_1", "var": 1, "inputMode": "chips", "badge": "Level 1: Click chọn từ (Learn)", "orig": "Rock music and folk music are different.", "lead": "Rock music is different", "target": "Rock music is different from folk music.", "accept": ["Rock music is different from folk music.", "Rock music is different from folk music", "rock music is different from folk music.", "from folk music.", "from folk music"], "chips": ["Rock music", "is", "different", "from", "folk music", "to", "with", "as"], "clue": "💡 <strong>Gợi ý:</strong> Tính từ 'different' luôn đi với giới từ <strong>'from'</strong> (không dùng with/to trong tiếng Anh chuẩn lớp 7).", "explain": "Cấu trúc so sánh khác biệt: <strong>S1 + be + different from + S2</strong> (Nhạc rock thì khác biệt so với nhạc dân gian)."}, {"id": "rw_2_2", "var": 2, "inputMode": "type", "badge": "Level 2: Tự gõ bàn phím (Practice)", "orig": "Classical music and country music are different.", "lead": "Classical music is different", "target": "Classical music is different from country music.", "accept": ["Classical music is different from country music.", "Classical music is different from country music", "classical music is different from country music.", "from country music.", "from country music"], "chips": ["Classical music", "is", "different", "from", "country music", "same as", "than"], "clue": "💡 <strong>Gợi ý:</strong> Gõ giới từ 'from' + 'country music' vào ô trả lời.", "explain": "Nhạc cổ điển thì khác biệt so với nhạc đồng quê (is different from country music)."}, {"id": "rw_2_3", "var": 3, "inputMode": "type", "badge": "Level 3: Tự gõ cả câu (Mastery)", "orig": "Traditional oil painting and digital art are different.", "lead": "Traditional oil painting", "target": "Traditional oil painting is different from digital art.", "accept": ["Traditional oil painting is different from digital art.", "Traditional oil painting is different from digital art", "traditional oil painting is different from digital art.", "is different from digital art.", "is different from digital art"], "chips": ["Traditional oil painting", "is", "different", "from", "digital art", "not as", "to"], "clue": "💡 <strong>Gợi ý:</strong> Tự gõ toàn bộ câu: 'is different from digital art.'", "explain": "Tranh sơn dầu truyền thống khác biệt so với nghệ thuật số (is different from digital art)."}]}, {"id": "pat_same_size_as", "title": "Mẫu 3: the same [noun] as ⟷ as [adj] as", "formula": "Both S1 & S2 are the same size  ⟷  S1 is as big/large as S2", "rule_vn": "Chuyển đổi giữa cụm danh từ chỉ kích thước/chiều dài/tuổi 'the same + N' và cụm tính từ so sánh bằng 'as + Adj + as' (size ⟷ large/big; length/duration ⟷ long; age ⟷ old).", "questions": [{"id": "rw_3_1", "var": 1, "inputMode": "chips", "badge": "Level 1: Click chọn từ (Learn)", "orig": "Both puppets are the same size.", "lead": "The red puppet is as", "target": "The red puppet is as big as the blue puppet.", "accept": ["The red puppet is as big as the blue puppet.", "The red puppet is as big as the blue puppet", "The red puppet is as large as the blue puppet.", "The red puppet is as large as the blue puppet", "The red puppet is as big as the other puppet.", "The red puppet is as large as the other puppet.", "big as the blue puppet.", "large as the blue puppet."], "chips": ["The red puppet", "is", "as", "big as", "large as", "the blue puppet", "the other puppet", "size", "same"], "clue": "💡 <strong>Gợi ý:</strong> 'the same size' (cùng kích cỡ) tương đương với 'as big as' hoặc 'as large as' (to/lớn bằng).", "explain": "Khi hai con rối có cùng kích cỡ, con rối đỏ to/lớn bằng con rối xanh (is as big/large as the blue puppet)."}, {"id": "rw_3_2", "var": 2, "inputMode": "type", "badge": "Level 2: Tự gõ bàn phím (Practice)", "orig": "The water puppet show and the dance lasted one hour.", "lead": "The water puppet show was as", "target": "The water puppet show was as long as the dance.", "accept": ["The water puppet show was as long as the dance.", "The water puppet show was as long as the dance", "the water puppet show was as long as the dance.", "long as the dance.", "long as the dance"], "chips": ["The water puppet show", "was", "as", "long", "as", "the dance", "longer", "than", "hour"], "clue": "💡 <strong>Gợi ý:</strong> Cả hai đều kéo dài 1 giờ (cùng thời lượng), gõ: 'long as the dance.'", "explain": "Cả buổi múa rối nước và điệu nhảy đều kéo dài 1 tiếng ➔ Buổi múa rối nước dài bằng điệu nhảy (was as long as the dance)."}, {"id": "rw_3_3", "var": 3, "inputMode": "type", "badge": "Level 3: Tự gõ cả câu (Mastery)", "orig": "The old art gallery is as large as the new one.", "lead": "The new art gallery is", "target": "The new art gallery is as large as the old gallery.", "accept": ["The new art gallery is as large as the old gallery.", "The new art gallery is as large as the old one.", "The new art gallery is the same size as the old gallery.", "The new art gallery is the same size as the old one.", "The new art gallery is as large as the old gallery", "The new art gallery is as large as the old one", "as large as the old gallery.", "as large as the old one."], "chips": ["The new art gallery", "is", "as large as", "the same size as", "the old gallery", "the old one", "larger"], "clue": "💡 <strong>Gợi ý:</strong> Tự gõ: 'as large as the old gallery.' hoặc 'the same size as the old gallery.'", "explain": "Phòng tranh nghệ thuật mới cũng rộng lớn bằng phòng tranh cũ (is as large as the old gallery)."}]}, {"id": "pat_comparative_not_as", "title": "Mẫu 4: S1 + be better/more adj than S2 ⟷ S2 + be not as adj as S1", "formula": "S1 + be + more adj / better than + S2  ⟷  S2 + be + not as adj as + S1", "rule_vn": "So sánh hơn chuyển sang phủ định so sánh bằng: Nếu S1 tốt hơn/hay hơn S2 thì S2 'không tốt/hay bằng' S1. Lưu ý 'better' chuyển về tính từ nguyên mẫu 'good'.", "questions": [{"id": "rw_4_1", "var": 1, "inputMode": "chips", "badge": "Level 1: Click chọn từ (Learn)", "orig": "The first performance was better than the second.", "lead": "The second performance was not", "target": "The second performance was not as good as the first performance.", "accept": ["The second performance was not as good as the first performance.", "The second performance was not as good as the first one.", "The second performance was not as good as the first.", "The second performance was not as good as the first performance", "The second performance was not as good as the first one", "as good as the first performance.", "as good as the first one."], "chips": ["The second performance", "was not", "as good as", "the first performance", "the first one", "better", "than", "as well as"], "clue": "💡 <strong>Gợi ý:</strong> 'better than' (tốt hơn) khi chuyển sang phủ định so sánh bằng phải dùng tính từ gốc: <strong>'not as good as'</strong> (không tốt bằng).", "explain": "Tiết mục thứ nhất hay hơn tiết mục thứ hai ➔ Tiết mục thứ hai không hay bằng tiết mục thứ nhất (was not as good as the first performance)."}, {"id": "rw_4_2", "var": 2, "inputMode": "type", "badge": "Level 2: Tự gõ bàn phím (Practice)", "orig": "The live concert was more exciting than the film.", "lead": "The film was not as", "target": "The film was not as exciting as the concert.", "accept": ["The film was not as exciting as the concert.", "The film was not as exciting as the live concert.", "The film was not as exciting as the concert", "the film was not as exciting as the concert.", "exciting as the concert.", "exciting as the live concert."], "chips": ["The film", "was not as", "exciting as", "the concert", "the live concert", "more", "than"], "clue": "💡 <strong>Gợi ý:</strong> Tự gõ: 'exciting as the concert.'", "explain": "Buổi hòa nhạc sôi động hơn bộ phim ➔ Bộ phim không sôi động bằng buổi hòa nhạc (was not as exciting as the concert)."}, {"id": "rw_4_3", "var": 3, "inputMode": "type", "badge": "Level 3: Tự gõ cả câu (Mastery)", "orig": "This oil painting is more colourful than that one.", "lead": "That painting is not as", "target": "That painting is not as colourful as this painting.", "accept": ["That painting is not as colourful as this painting.", "That painting is not as colourful as this one.", "That painting is not as colourful as this oil painting.", "That painting is not as colourful as this painting", "That painting is not as colourful as this one", "colourful as this painting.", "colourful as this one."], "chips": ["That painting", "is not as", "colourful as", "this painting", "this one", "more", "colourful than"], "clue": "💡 <strong>Gợi ý:</strong> Gõ: 'colourful as this painting.' (hoặc 'this one.')", "explain": "Bức tranh kia không rực rỡ sắc màu bằng bức tranh này (is not as colourful as this painting/this one)."}]}, {"id": "pat_not_same_different", "title": "Mẫu 5: not the same as ⟷ different from", "formula": "S1 + be + not the same as + S2  ⟷  S1 + be + different from + S2", "rule_vn": "'not the same as' (không giống với) hoàn toàn đồng nghĩa với 'different from' (khác biệt so với).", "questions": [{"id": "rw_5_1", "var": 1, "inputMode": "chips", "badge": "Level 1: Click chọn từ (Learn)", "orig": "A sculpture is not the same as a painting.", "lead": "A sculpture is different", "target": "A sculpture is different from a painting.", "accept": ["A sculpture is different from a painting.", "A sculpture is different from a painting", "a sculpture is different from a painting.", "from a painting.", "from a painting"], "chips": ["A sculpture", "is", "different", "from", "a painting", "the same as", "with", "to"], "clue": "💡 <strong>Gợi ý:</strong> Thay 'is not the same as' bằng cụm 'is different from'.", "explain": "Tượng điêu khắc không giống tranh vẽ ➔ Tượng điêu khắc khác biệt so với tranh vẽ (is different from a painting)."}, {"id": "rw_5_2", "var": 2, "inputMode": "type", "badge": "Level 2: Tự gõ bàn phím (Practice)", "orig": "Pop music is different from folk music.", "lead": "Pop music is not", "target": "Pop music is not the same as folk music.", "accept": ["Pop music is not the same as folk music.", "Pop music is not the same as folk music", "pop music is not the same as folk music.", "the same as folk music.", "the same as folk music"], "chips": ["Pop music", "is not", "the same as", "folk music", "different from", "like", "as"], "clue": "💡 <strong>Gợi ý:</strong> Tự gõ: 'the same as folk music.'", "explain": "Nhạc pop khác với nhạc dân gian ➔ Nhạc pop không giống với nhạc dân gian (is not the same as folk music)."}, {"id": "rw_5_3", "var": 3, "inputMode": "type", "badge": "Level 3: Tự gõ cả câu (Mastery)", "orig": "A live theatre performance is not the same as watching a recorded video.", "lead": "A live theatre performance", "target": "A live theatre performance is different from watching a recorded video.", "accept": ["A live theatre performance is different from watching a recorded video.", "A live theatre performance is different from watching a recorded video", "a live theatre performance is different from watching a recorded video.", "is different from watching a recorded video.", "is different from watching a recorded video"], "chips": ["A live theatre performance", "is", "different from", "watching a recorded video", "not the same as", "to"], "clue": "💡 <strong>Gợi ý:</strong> Tự gõ cả câu với cụm 'is different from watching a recorded video.'", "explain": "Buổi biểu diễn sân khấu trực tiếp khác biệt so với việc xem video ghi hình (is different from watching a recorded video)."}]}, {"id": "pat_short_adj_comp", "title": "Mẫu 6: adj-er than ⟷ not as adj as", "formula": "S1 + be + adj-er + than + S2  ⟷  S2 + be + not as + adj + as + S1", "rule_vn": "Với tính từ ngắn (quieter, cheaper, older), khi chuyển sang phủ định so sánh bằng, ta bỏ đuôi '-er' để đưa về tính từ nguyên mẫu: 'not as quiet/cheap/old as'.", "questions": [{"id": "rw_6_1", "var": 1, "inputMode": "chips", "badge": "Level 1: Click chọn từ (Learn)", "orig": "The gallery is quieter than the theatre.", "lead": "The theatre is not as", "target": "The theatre is not as quiet as the gallery.", "accept": ["The theatre is not as quiet as the gallery.", "The theatre is not as quiet as the gallery", "the theatre is not as quiet as the gallery.", "quiet as the gallery.", "quiet as the gallery"], "chips": ["The theatre", "is not as", "quiet as", "the gallery", "quieter", "than", "quiet than"], "clue": "💡 <strong>Gợi ý:</strong> 'quieter than' (yên tĩnh hơn) chuyển sang phủ định là 'not as quiet as' (bỏ đuôi -er).", "explain": "Phòng trưng bày yên tĩnh hơn nhà hát ➔ Nhà hát không yên tĩnh bằng phòng trưng bày (is not as quiet as the gallery)."}, {"id": "rw_6_2", "var": 2, "inputMode": "type", "badge": "Level 2: Tự gõ bàn phím (Practice)", "orig": "The art museum ticket is cheaper than the concert ticket.", "lead": "The concert ticket is not as", "target": "The concert ticket is not as cheap as the art museum ticket.", "accept": ["The concert ticket is not as cheap as the art museum ticket.", "The concert ticket is not as cheap as the art museum ticket", "the concert ticket is not as cheap as the art museum ticket.", "cheap as the art museum ticket.", "cheap as the art museum ticket"], "chips": ["The concert ticket", "is not as", "cheap as", "the art museum ticket", "cheaper than", "expensive"], "clue": "💡 <strong>Gợi ý:</strong> Tự gõ: 'cheap as the art museum ticket.'", "explain": "Vé bảo tàng rẻ hơn vé hòa nhạc ➔ Vé hòa nhạc không rẻ bằng vé bảo tàng (is not as cheap as the art museum ticket)."}, {"id": "rw_6_3", "var": 3, "inputMode": "type", "badge": "Level 3: Tự gõ cả câu (Mastery)", "orig": "Traditional water puppetry is older than modern cinema.", "lead": "Modern cinema is not", "target": "Modern cinema is not as old as traditional water puppetry.", "accept": ["Modern cinema is not as old as traditional water puppetry.", "Modern cinema is not as old as traditional water puppetry", "modern cinema is not as old as traditional water puppetry.", "as old as traditional water puppetry.", "as old as traditional water puppetry"], "chips": ["Modern cinema", "is not as", "old as", "traditional water puppetry", "older than", "as old"], "clue": "💡 <strong>Gợi ý:</strong> Tự gõ cả câu: 'as old as traditional water puppetry.'", "explain": "Múa rối nước truyền thống lâu đời hơn điện ảnh hiện đại ➔ Điện ảnh hiện đại không lâu đời bằng múa rối nước (is not as old as traditional water puppetry)."}]}, {"id": "pat_prefer_to", "title": "Mẫu 7: like ... more than ... ⟷ prefer ... to ...", "formula": "S + like + A + more than + B  ⟷  S + prefer + A + to + B", "rule_vn": "Cấu trúc diễn đạt sở thích hơn: 'like A more than B' tương đương 'prefer A to B'. Chú ý giới từ bắt buộc là 'to' (không dùng than).", "questions": [{"id": "rw_7_1", "var": 1, "inputMode": "chips", "badge": "Level 1: Click chọn từ (Learn)", "orig": "I like folk music more than pop music.", "lead": "I prefer", "target": "I prefer folk music to pop music.", "accept": ["I prefer folk music to pop music.", "I prefer folk music to pop music", "i prefer folk music to pop music.", "folk music to pop music.", "folk music to pop music"], "chips": ["I prefer", "folk music", "to", "pop music", "than", "more than", "like"], "clue": "💡 <strong>Gợi ý:</strong> Đi sau 'prefer' là danh từ yêu thích hơn + giới từ <strong>'to'</strong> + danh từ ít thích hơn.", "explain": "Cấu trúc chuẩn: <strong>prefer + Noun 1 + to + Noun 2</strong> (Tôi thích nhạc dân gian hơn nhạc pop)."}, {"id": "rw_7_2", "var": 2, "inputMode": "type", "badge": "Level 2: Tự gõ bàn phím (Practice)", "orig": "Minh likes playing the guitar more than playing the piano.", "lead": "Minh prefers", "target": "Minh prefers playing the guitar to playing the piano.", "accept": ["Minh prefers playing the guitar to playing the piano.", "Minh prefers playing the guitar to playing the piano", "minh prefers playing the guitar to playing the piano.", "playing the guitar to playing the piano.", "playing the guitar to playing the piano"], "chips": ["Minh prefers", "playing the guitar", "to", "playing the piano", "than", "more than"], "clue": "💡 <strong>Gợi ý:</strong> Tự gõ: 'playing the guitar to playing the piano.' (chú ý dùng giới từ 'to').", "explain": "Minh thích chơi đàn guitar hơn chơi piano (prefers playing the guitar to playing the piano)."}, {"id": "rw_7_3", "var": 3, "inputMode": "type", "badge": "Level 3: Tự gõ cả câu (Mastery)", "orig": "My parents like watching water puppetry more than watching action films.", "lead": "My parents prefer", "target": "My parents prefer watching water puppetry to watching action films.", "accept": ["My parents prefer watching water puppetry to watching action films.", "My parents prefer watching water puppetry to watching action films", "my parents prefer watching water puppetry to watching action films.", "watching water puppetry to watching action films.", "watching water puppetry to watching action films"], "chips": ["My parents prefer", "watching water puppetry", "to", "watching action films", "than", "more"], "clue": "💡 <strong>Gợi ý:</strong> Tự gõ: 'watching water puppetry to watching action films.'", "explain": "Bố mẹ tôi thích xem múa rối nước hơn xem phim hành động (prefer watching water puppetry to watching action films)."}]}];
+var WORDFORM_ROOTS = [{"root": "EXHIBIT", "family": "exhibit (v) ➔ exhibition (n)", "meaning_vn": "Trưng bày / Triển lãm", "questions": [{"id": "wf_1_1", "var": 1, "inputMode": "chips", "badge": "Level 1: Trắc nghiệm (Learn)", "sent": "The museum is holding a photography ______________ this weekend. (EXHIBIT)", "ans": "exhibition", "options": ["exhibition", "exhibitor", "exhibiting", "exhibit"], "clue": "💡 <strong>Dấu hiệu:</strong> Sau mạo từ 'a' và danh từ bổ nghĩa 'photography', ta cần một <strong>danh từ số ít</strong> chỉ sự kiện/cuộc triển lãm.", "explain": "Photography exhibition: cuộc triển lãm ảnh nghệ thuật (danh từ đếm được số ít)."}, {"id": "wf_1_2", "var": 2, "inputMode": "type", "badge": "Level 2: Tự gõ từ đúng (Practice)", "sent": "Many valuable historical paintings are currently on ______________ at the national gallery. (EXHIBIT)", "ans": "exhibition", "options": ["exhibition", "exhibits", "exhibitor", "exhibited"], "clue": "💡 <strong>Cụm từ cố định:</strong> 'on exhibition' có nghĩa là 'đang được trưng bày / triển lãm'.", "explain": "Cụm thành ngữ: <strong>to be on exhibition</strong> (đang được triển lãm trước công chúng)."}, {"id": "wf_1_3", "var": 3, "inputMode": "type", "badge": "Level 3: Tự gõ từ đúng (Mastery)", "sent": "The city museum will ______________ ancient royal musical instruments next month. (EXHIBIT)", "ans": "exhibit", "options": ["exhibit", "exhibition", "exhibits", "exhibiting"], "clue": "💡 <strong>Ngữ pháp:</strong> Đứng sau trợ động từ tương lai 'will' cần một <strong>động từ nguyên mẫu</strong> (infinitive).", "explain": "Sau 'will' dùng động từ nguyên mẫu: <strong>will exhibit</strong> (sẽ trưng bày các nhạc cụ cung đình cổ)."}]}, {"root": "PHOTOGRAPH", "family": "photograph (n/v) ➔ photographer (n-person) ➔ photography (n-art)", "meaning_vn": "Chụp ảnh / Nhiếp ảnh gia / Bức ảnh", "questions": [{"id": "wf_2_1", "var": 1, "inputMode": "chips", "badge": "Level 1: Trắc nghiệm (Learn)", "sent": "She wants to become a professional ______________ for a travel magazine. (PHOTOGRAPH)", "ans": "photographer", "options": ["photographer", "photography", "photographic", "photographs"], "clue": "💡 <strong>Dấu hiệu:</strong> Sau cụm 'become a professional + [Noun]' ta cần một <strong>danh từ chỉ người</strong> (nhiếp ảnh gia).", "explain": "Photographer (/fəˈtɒɡrəfər/): nhiếp ảnh gia chuyên nghiệp."}, {"id": "wf_2_2", "var": 2, "inputMode": "type", "badge": "Level 2: Tự gõ từ đúng (Practice)", "sent": "Taking landscape ______________ requires patience and good natural lighting. (PHOTOGRAPH)", "ans": "photographs", "options": ["photographs", "photographer", "photographing", "photographically"], "clue": "💡 <strong>Dấu hiệu:</strong> Đi sau danh từ 'landscape' để chỉ những bức ảnh phong cảnh số nhiều (thêm -s).", "explain": "Landscape photographs: những bức ảnh chụp phong cảnh thiên nhiên."}, {"id": "wf_2_3", "var": 3, "inputMode": "type", "badge": "Level 3: Tự gõ từ đúng (Mastery)", "sent": "My brother joined the school ______________ club to learn how to edit digital pictures. (PHOTOGRAPH)", "ans": "photography", "options": ["photography", "photographer", "photographs", "photographic"], "clue": "💡 <strong>Dấu hiệu:</strong> Danh từ chỉ bộ môn/ngành nghệ thuật nhiếp ảnh đứng trước danh từ 'club'.", "explain": "Photography club: câu lạc bộ nhiếp ảnh (ngành nghệ thuật chụp ảnh)."}]}, {"root": "PORTRAY", "family": "portray (v) ➔ portrayal / portrait (n)", "meaning_vn": "Khắc họa / Bức tranh chân dung", "questions": [{"id": "wf_3_1", "var": 1, "inputMode": "chips", "badge": "Level 1: Trắc nghiệm (Learn)", "sent": "The painting is an accurate ______________ of peaceful rural village life. (PORTRAY)", "ans": "portrayal", "options": ["portrayal", "portrait", "portraying", "portrays"], "clue": "💡 <strong>Dấu hiệu:</strong> Sau tính từ 'accurate' cần một danh từ chỉ sự khắc họa / bức tranh miêu tả (portrayal).", "explain": "Portrayal (/pɔːˈtreɪəl/): sự khắc họa, miêu tả chân thực bức tranh cuộc sống làng quê."}, {"id": "wf_3_2", "var": 2, "inputMode": "type", "badge": "Level 2: Tự gõ từ đúng (Practice)", "sent": "The artist drew a stunning ______________ of Uncle Ho smiling with children. (PORTRAY)", "ans": "portrait", "options": ["portrait", "portrayal", "portraying", "portray"], "clue": "💡 <strong>Dấu hiệu:</strong> Cần danh từ chỉ bức tranh vẽ chân dung con người sau 'a stunning ...'.", "explain": "Portrait (/ˈpɔːtrət/): bức tranh vẽ chân dung (khuôn mặt nhân vật)."}, {"id": "wf_3_3", "var": 3, "inputMode": "type", "badge": "Level 3: Tự gõ từ đúng (Mastery)", "sent": "This traditional folk song vividly ______________ the hard life of ancient farmers. (PORTRAY)", "ans": "portrays", "options": ["portrays", "portray", "portrayal", "portrayed"], "clue": "💡 <strong>Ngữ pháp:</strong> Chủ ngữ 'This traditional folk song' là danh từ số ít, đi sau trạng từ 'vividly' cần <strong>động từ chia thì hiện tại đơn thêm -s</strong>.", "explain": "Động từ số ít ở hiện tại đơn: <strong>portrays</strong> (khắc họa một cách sinh động)."}]}, {"root": "PUPPET", "family": "puppet (n) ➔ puppeteer (n-person) ➔ puppetry (n-art)", "meaning_vn": "Con rối / Nghệ nhân múa rối / Nghệ thuật múa rối", "questions": [{"id": "wf_4_1", "var": 1, "inputMode": "chips", "badge": "Level 1: Trắc nghiệm (Learn)", "sent": "The water ______________ controlled the wooden figures skillfully behind the bamboo screen. (PUPPET)", "ans": "puppeteers", "options": ["puppeteers", "puppetry", "puppets", "puppeteer"], "clue": "💡 <strong>Dấu hiệu:</strong> Cần <strong>danh từ chỉ người số nhiều</strong> làm chủ ngữ thực hiện hành động 'controlled' (nghệ nhân điều khiển rối).", "explain": "Puppeteers (/ˌpʌpɪˈtɪəz/): các nghệ nhân múa rối (đứng sau mành tre điều khiển con rối)."}, {"id": "wf_4_2", "var": 2, "inputMode": "type", "badge": "Level 2: Tự gõ từ đúng (Practice)", "sent": "Water ______________ is a unique traditional theatre art originating in northern Viet Nam. (PUPPET)", "ans": "puppetry", "options": ["puppetry", "puppeteers", "puppets", "puppet"], "clue": "💡 <strong>Dấu hiệu:</strong> Cần danh từ không đếm được chỉ môn nghệ thuật múa rối làm chủ ngữ số ít (đi với động từ 'is').", "explain": "Water puppetry (/ˈpʌpɪtri/): nghệ thuật múa rối nước truyền thống của Việt Nam."}, {"id": "wf_4_3", "var": 3, "inputMode": "type", "badge": "Level 3: Tự gõ từ đúng (Mastery)", "sent": "These colourful string ______________ were hand-carved from fig wood. (PUPPET)", "ans": "puppets", "options": ["puppets", "puppetry", "puppeteers", "puppet"], "clue": "💡 <strong>Dấu hiệu:</strong> Đi sau từ chỉ định số nhiều 'These colourful string ... were' cần danh từ con rối số nhiều.", "explain": "String puppets: những con rối dây (được chạm khắc thủ công từ gỗ sung)."}]}, {"root": "SCULPT", "family": "sculpt (v) ➔ sculpture (n-work) ➔ sculptor (n-person)", "meaning_vn": "Điêu khắc / Tác phẩm điêu khắc / Nhà điêu khắc", "questions": [{"id": "wf_5_1", "var": 1, "inputMode": "chips", "badge": "Level 1: Trắc nghiệm (Learn)", "sent": "The marble ______________ was carefully created by a young Vietnamese artist. (SCULPT)", "ans": "sculpture", "options": ["sculpture", "sculptor", "sculpted", "sculpting"], "clue": "💡 <strong>Dấu hiệu:</strong> Cần <strong>danh từ chỉ tác phẩm vật thể</strong> (bức tượng/tác phẩm điêu khắc) đứng sau tính từ chất liệu 'marble' (đá cẩm thạch).", "explain": "Marble sculpture (/ˈskʌlptʃər/): bức tượng điêu khắc bằng đá cẩm thạch."}, {"id": "wf_5_2", "var": 2, "inputMode": "type", "badge": "Level 2: Tự gõ từ đúng (Practice)", "sent": "Auguste Rodin was a world-renowned French ______________ who created 'The Thinker'. (SCULPT)", "ans": "sculptor", "options": ["sculptor", "sculpture", "sculpting", "sculptures"], "clue": "💡 <strong>Dấu hiệu:</strong> Cần <strong>danh từ chỉ người</strong> (nhà điêu khắc) sau cụm 'French ... who created'.", "explain": "Sculptor (/ˈskʌlptər/): nhà điêu khắc / nghệ nhân tạc tượng."}, {"id": "wf_5_3", "var": 3, "inputMode": "type", "badge": "Level 3: Tự gõ từ đúng (Mastery)", "sent": "The skilled craftsman ______________ a majestic dragon out of a single block of wood yesterday. (SCULPT)", "ans": "sculpted", "options": ["sculpted", "sculpture", "sculptor", "sculpting"], "clue": "💡 <strong>Ngữ pháp:</strong> Có trạng từ thời gian quá khứ 'yesterday', cần <strong>động từ ở thì quá khứ đơn (V-ed)</strong>.", "explain": "Động từ quá khứ đơn: <strong>sculpted</strong> (đã điêu khắc/tạo tác một con rồng uy nghiêm)."}]}, {"root": "ART", "family": "art (n) ➔ artist (n-person) ➔ artistic (adj) ➔ artistically (adv)", "meaning_vn": "Nghệ thuật / Nghệ sĩ / Thuộc nghệ thuật / Khéo léo", "questions": [{"id": "wf_6_1", "var": 1, "inputMode": "chips", "badge": "Level 1: Trắc nghiệm (Learn)", "sent": "The students showed remarkable ______________ talent during the annual talent show. (ART)", "ans": "artistic", "options": ["artistic", "artist", "artistically", "arts"], "clue": "💡 <strong>Dấu hiệu:</strong> Đứng trước danh từ 'talent' cần một <strong>tính từ</strong> để bổ nghĩa (tài năng nghệ thuật).", "explain": "Artistic talent: năng khiếu / tài năng thiên bẩm về nghệ thuật."}, {"id": "wf_6_2", "var": 2, "inputMode": "type", "badge": "Level 2: Tự gõ từ đúng (Practice)", "sent": "Picasso and Da Vinci are regarded as two of the greatest ______________ in human history. (ART)", "ans": "artists", "options": ["artists", "artistic", "artist", "artistry"], "clue": "💡 <strong>Dấu hiệu:</strong> Sau 'two of the greatest ...' cần <strong>danh từ chỉ người số nhiều</strong> (những người nghệ sĩ/họa sĩ).", "explain": "Greatest artists: những nghệ sĩ / danh họa vĩ đại nhất."}, {"id": "wf_6_3", "var": 3, "inputMode": "type", "badge": "Level 3: Tự gõ từ đúng (Mastery)", "sent": "The festival stage was ______________ decorated with traditional bamboo lanterns. (ART)", "ans": "artistically", "options": ["artistically", "artistic", "artist", "arts"], "clue": "💡 <strong>Dấu hiệu:</strong> Đứng trước phân từ II 'decorated' (bị động) cần một <strong>trạng từ</strong> chỉ cách thức.", "explain": "Trạng từ: <strong>artistically decorated</strong> (được trang trí một cách đầy tính nghệ thuật)."}]}, {"root": "BEAUTY", "family": "beauty (n) ➔ beautiful (adj) ➔ beautifully (adv)", "meaning_vn": "Vẻ đẹp / Xinh đẹp / Một cách tuyệt vời", "questions": [{"id": "wf_7_1", "var": 1, "inputMode": "chips", "badge": "Level 1: Trắc nghiệm (Learn)", "sent": "The young violinist played the final concerto movement ______________. (BEAUTY)", "ans": "beautifully", "options": ["beautifully", "beautiful", "beauty", "beautify"], "clue": "💡 <strong>Dấu hiệu:</strong> Đứng sau động từ 'played' và tân ngữ, cần một <strong>trạng từ</strong> miêu tả cách thức chơi đàn.", "explain": "Trạng từ bổ nghĩa cho động từ: <strong>played beautifully</strong> (chơi đàn một cách vô cùng truyền cảm, tuyệt vời)."}, {"id": "wf_7_2", "var": 2, "inputMode": "type", "badge": "Level 2: Tự gõ từ đúng (Practice)", "sent": "She wore a ______________ traditional 'Ao Dai' to the music awards gala. (BEAUTY)", "ans": "beautiful", "options": ["beautiful", "beautifully", "beauty", "beauties"], "clue": "💡 <strong>Dấu hiệu:</strong> Đứng trước cụm danh từ 'traditional Ao Dai' cần một <strong>tính từ</strong> miêu tả vẻ ngoài.", "explain": "A beautiful traditional Ao Dai: một tà áo dài truyền thống tuyệt đẹp."}, {"id": "wf_7_3", "var": 3, "inputMode": "type", "badge": "Level 3: Tự gõ từ đúng (Mastery)", "sent": "The natural ______________ of Ha Long Bay has inspired countless landscape painters. (BEAUTY)", "ans": "beauty", "options": ["beauty", "beautiful", "beautifully", "beautify"], "clue": "💡 <strong>Dấu hiệu:</strong> Đứng sau tính từ 'natural' và đứng trước giới từ 'of' cần một <strong>danh từ</strong>.", "explain": "Natural beauty: vẻ đẹp tự nhiên / vẻ đẹp thiên nhiên."}]}, {"root": "DIFFER", "family": "differ (v) ➔ different (adj) ➔ difference (n) ➔ differently (adv)", "meaning_vn": "Khác biệt / Sự khác nhau / Khác", "questions": [{"id": "wf_8_1", "var": 1, "inputMode": "chips", "badge": "Level 1: Trắc nghiệm (Learn)", "sent": "The two musical instruments are completely ______________ from each other in sound and shape. (DIFFER)", "ans": "different", "options": ["different", "difference", "differently", "differ"], "clue": "💡 <strong>Dấu hiệu:</strong> Sau to be 'are' và trạng từ 'completely', đi kèm giới từ 'from' cần một <strong>tính từ</strong>.", "explain": "Are completely different from: hoàn toàn khác biệt so với đối tượng còn lại."}, {"id": "wf_8_2", "var": 2, "inputMode": "type", "badge": "Level 2: Tự gõ từ đúng (Practice)", "sent": "Can you point out the main ______________ between a violin and a cello? (DIFFER)", "ans": "difference", "options": ["difference", "different", "differently", "differences"], "clue": "💡 <strong>Dấu hiệu:</strong> Sau mạo từ 'the' và tính từ 'main', trước 'between' cần một <strong>danh từ số ít</strong>.", "explain": "The main difference: sự khác biệt chính giữa hai loại nhạc cụ."}, {"id": "wf_8_3", "var": 3, "inputMode": "type", "badge": "Level 3: Tự gõ từ đúng (Mastery)", "sent": "Musicians interpret the same classical symphony ______________ depending on their emotion. (DIFFER)", "ans": "differently", "options": ["differently", "different", "difference", "differ"], "clue": "💡 <strong>Dấu hiệu:</strong> Đứng sau động từ 'interpret' (diễn tấu/thể hiện) và tân ngữ cần một <strong>trạng từ</strong> chỉ cách thức.", "explain": "Interpret the symphony differently: diễn giải và chơi bản giao hưởng theo những cách khác nhau."}]}];
+var WAVE_QUESTIONS = [["rw_1_1", "rw_1_2", "wf_1_1"], ["wf_1_2", "rw_2_1", "rw_2_2"], ["wf_2_1", "wf_2_2", "rw_3_1"], ["rw_3_2", "wf_3_1", "wf_3_2"], ["rw_4_1", "rw_4_2", "wf_4_1"], ["wf_4_2", "rw_5_1", "rw_5_2"], ["wf_5_1", "wf_5_2", "rw_6_1"], ["rw_6_2", "wf_6_1", "rw_7_2"]];
+
+/* ==========================================================================
+   WEB AUDIO API SOUND SYNTHESIS (Zero External Audio Dependency)
+   ========================================================================== */
+var actx = null, isMuted = false;
+function getAudioContext() {
+  if (!actx) {
+    var AC = window.AudioContext || window.webkitAudioContext;
+    if (AC) { actx = new AC(); }
+  }
+  if (actx && actx.state === "suspended") { actx.resume(); }
+  return actx;
+}
+function playTone(freq, dur, type, vol, delay) {
+  if (isMuted) return;
+  var ctx = getAudioContext();
+  if (!ctx) return;
+  var t0 = ctx.currentTime + (delay || 0);
+  var osc = ctx.createOscillator(), g = ctx.createGain();
+  osc.type = type || "sine";
+  osc.frequency.setValueAtTime(freq, t0);
+  g.gain.setValueAtTime(0.0001, t0);
+  g.gain.exponentialRampToValueAtTime(vol || 0.2, t0 + 0.015);
+  g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+  osc.connect(g);
+  g.connect(ctx.destination);
+  osc.start(t0);
+  osc.stop(t0 + dur + 0.03);
+}
+var Sound = {
+  correct: function() {
+    playTone(523, 0.1, "triangle", 0.25, 0);
+    playTone(659, 0.1, "triangle", 0.25, 0.08);
+    playTone(784, 0.16, "triangle", 0.25, 0.16);
+    playTone(1046, 0.25, "triangle", 0.3, 0.24);
+  },
+  wrong: function() {
+    playTone(220, 0.15, "square", 0.18, 0);
+    playTone(164, 0.25, "square", 0.18, 0.12);
+  },
+  coin: function() {
+    playTone(987, 0.08, "sine", 0.25, 0);
+    playTone(1318, 0.15, "sine", 0.25, 0.07);
+  },
+  shoot: function() {
+    playTone(400, 0.06, "sawtooth", 0.12, 0);
+  },
+  freeze: function() {
+    playTone(800, 0.15, "sine", 0.15, 0);
+    playTone(1200, 0.2, "sine", 0.1, 0.05);
+  },
+  hit: function() {
+    playTone(120, 0.1, "square", 0.2, 0);
+  },
+  boom: function() {
+    playTone(80, 0.3, "sawtooth", 0.35, 0);
+    playTone(50, 0.4, "triangle", 0.3, 0.1);
+  },
+  win: function() {
+    [523, 659, 784, 1046, 1318].forEach(function(f, i) {
+      playTone(f, 0.22, "triangle", 0.25, i * 0.12);
+    });
+  },
+  lose: function() {
+    [400, 350, 300, 240].forEach(function(f, i) {
+      playTone(f, 0.25, "sawtooth", 0.2, i * 0.15);
+    });
+  }
+};
+function toggleMute() {
+  isMuted = !isMuted;
+  document.getElementById("btn_sound").textContent = isMuted ? "🔇" : "🔊";
+}
+function toggleFullscreen() {
+  if (!document.fullscreenElement) {
+    document.documentElement.requestFullscreen().catch(function(){});
+  } else {
+    document.exitFullscreen().catch(function(){});
+  }
+}
+
+/* ==========================================================================
+   WEB SPEECH SYNTHESIS
+   ========================================================================== */
+function speakText(txt) {
+  if (!window.speechSynthesis || isMuted) return;
+  window.speechSynthesis.cancel();
+  var u = new SpeechSynthesisUtterance(txt);
+  u.lang = 'en-US';
+  u.rate = 0.9;
+  window.speechSynthesis.speak(u);
+}
+
+/* ==========================================================================
+   VIEW SWITCHING
+   ========================================================================== */
+var currentView = 'game';
+function switchView(viewName) {
+  currentView = viewName;
+  document.querySelectorAll('.view-section').forEach(function(el) { el.classList.remove('active'); });
+  document.querySelectorAll('.mode-tab').forEach(function(el) { el.classList.remove('active'); });
+  
+  document.getElementById('view_' + viewName).classList.add('active');
+  document.getElementById('tab_' + viewName).classList.add('active');
+
+  if (viewName === 'game') {
+    fitStage();
+  } else if (viewName === 'worksheet') {
+    renderWorksheet();
+  }
+}
+
+/* ==========================================================================
+   STAGE AUTO-SCALER (Viewport Fitting for Phones & Desktops)
+   ========================================================================== */
+var STAGE_W = 1280, STAGE_H = 720;
+function fitStage() {
+  var stage = document.getElementById("game_stage");
+  var vp = document.getElementById("game_viewport");
+  if (!stage || !vp) return;
+  var w = vp.clientWidth || window.innerWidth;
+  var h = vp.clientHeight || (window.innerHeight - 68);
+  var s = Math.min(w / STAGE_W, h / STAGE_H);
+  if (!(s > 0)) s = 1;
+  stage.style.transform = "translate(-50%, -50%) scale(" + s + ")";
+}
+window.addEventListener("resize", fitStage);
+window.addEventListener("orientationchange", function() { setTimeout(fitStage, 150); });
+
+/* ==========================================================================
+   GLOBAL CURRENCY & REWARDS
+   ========================================================================== */
+var totalCoins = 30;
+function addCoins(amount) {
+  totalCoins += amount;
+  document.getElementById("top_coins").textContent = totalCoins;
+  var shopCoins = document.getElementById("shop_coins_val");
+  if (shopCoins) shopCoins.textContent = totalCoins;
+  renderShop();
+}
+function spendCoins(amount) {
+  if (totalCoins >= amount) {
+    totalCoins -= amount;
+    document.getElementById("top_coins").textContent = totalCoins;
+    var shopCoins = document.getElementById("shop_coins_val");
+    if (shopCoins) shopCoins.textContent = totalCoins;
+    renderShop();
+    return true;
+  }
+  return false;
+}
+
+/* ==========================================================================
+   CASTLE DEFENSE GAME ENGINE (8 Waves, 8 Bosses, Shop, Melee, Projectiles)
+   ========================================================================== */
+var canvas = document.getElementById("field");
+var ctx = canvas.getContext("2d");
+
+var WALL_X = 220, GATE_Y = 460;
+var CASTLE_MAX_HP = 20, castleHP = 20;
+var currentWave = 1, waveSubQ = 0;
+var streak = 0, gameScore = 0;
+var gamePhase = "question";
+var curQuestion = null;
+
+// Defender Garrison
+var garrison = {
+  archer: 2,
+  frostMage: 1,
+  catapult: 0,
+  wizard: 0,
+  knight: 1,
+  dragon: 0,
+  caltrops: 1
+};
+
+var DEFENDER_CONFIG = {
+  archer:    { name: "Royal Archer",   cost: 15, cap: 6, dmg: 4, rate: 1.2, pspd: 520, desc: "Bắn tên vật lý nhanh mục tiêu đơn" },
+  frostMage: { name: "Frost Mage",     cost: 20, cap: 4, dmg: 3, rate: 0.9, pspd: 460, desc: "Làm chậm tốc độ kẻ địch 50% trong 3s!" },
+  catapult:  { name: "Fire Catapult",  cost: 28, cap: 3, dmg: 14, rate: 0.45, pspd: 340, desc: "Bắn đá lửa phát nổ lan diện rộng (AoE)!" },
+  wizard:    { name: "Thunder Mage",   cost: 35, cap: 3, dmg: 9, rate: 0.8, pspd: 600, desc: "Sấm sét xuyên giáp, phóng tia chuỗi" },
+  knight:    { name: "Paladin Knight", cost: 22, cap: 4, hp: 45, dmg: 7, cd: 0.8, desc: "Xung phong chặn đường, đấu kiếm giáp lá cà!" },
+  dragon:    { name: "Flame Dragon",   cost: 45, cap: 2, dmg: 12, rate: 0.7, pspd: 420, desc: "Rồng lửa thiêu đốt hàng ngũ quái vật" },
+  caltrops:  { name: "Spike Caltrops", cost: 12, cap: 6, dmg: 8, desc: "Bẫy chông sắt gây sát thương quái giẫm phải" },
+  repair:    { name: "Gia Cố Thành",   cost: 8,  cap: 99, desc: "Hồi phục +3 máu cho tường thành" }
+};
+
+// Boss Definitions (8 Progressive Bosses for 8 Waves)
+var BOSS_LIST = [
+  { wave: 1, name: "Gark the Goblin Chieftain", hp: 65, spd: 55, sc: 1.4, ico: "👹", desc: "Tốc độ chạy cực nhanh với song đao!" },
+  { wave: 2, name: "Grashnak the Orc Warlord",   hp: 135, spd: 38, sc: 1.6, ico: "🪓", desc: "Rìu chiến khổng lồ, giáp sắt kiên cố!" },
+  { wave: 3, name: "Thorg the Troll King",      hp: 230, spd: 28, sc: 1.9, ico: "🧌", desc: "Thân hình hộ pháp, đòn nện đất chấn động!" },
+  { wave: 4, name: "Malakor the Necromancer",   hp: 330, spd: 32, sc: 1.6, ico: "💀", desc: "Triệu hồi tiểu lâu la xương bảo vệ!" },
+  { wave: 5, name: "Golgoth the Iron Colossus", hp: 450, spd: 24, sc: 2.1, ico: "🦾", desc: "Giáp sắt tối thượng, giảm 40% sát thương tên!" },
+  { wave: 6, name: "Ignis the Crimson Wyvern",  hp: 570, spd: 42, sc: 2.0, ico: "🐉", desc: "Bay lượn trên không, phun cầu lửa vào thành!" },
+  { wave: 7, name: "Frostfang the Glacial Titan", hp: 700, spd: 26, sc: 2.2, ico: "❄️", desc: "Hào quang băng giá làm chậm hiệp sĩ!" },
+  { wave: 8, name: "Lord Malakar - Chaos Overlord", hp: 950, spd: 30, sc: 2.4, ico: "👑", desc: "Trùm Cuối: Khiên hắc ám, cuồng nộ cực hạn!" }
+];
+
+// Battle Simulation State
+var enemies = [], shots = [], fx = [], knights = [], caltropTraps = [];
+var spawnQueue = [], spawnTimer = 0;
+
+function banner(txt, kind) {
+  var b = document.getElementById("game_banner");
+  b.textContent = txt;
+  b.className = "game-banner " + (kind || "info") + " show";
+  setTimeout(function() { b.classList.remove("show"); }, 2200);
+}
+
+function updateGameHUD() {
+  var hpFill = document.getElementById("game_hp_fill");
+  var hpVal = document.getElementById("game_hp_val");
+  var pct = Math.max(0, Math.min(100, Math.round((castleHP / CASTLE_MAX_HP) * 100)));
+  hpFill.style.width = pct + "%";
+  hpVal.textContent = castleHP + " / " + CASTLE_MAX_HP;
+  
+  document.getElementById("game_wave_title").innerHTML = "<span>🌊</span> Wave " + currentWave + " / 8";
+  document.getElementById("game_streak_num").textContent = streak;
+  document.getElementById("game_score_val").textContent = gameScore;
+  document.getElementById("top_coins").textContent = totalCoins;
+}
+
+/* ==========================================================================
+   GAME QUESTION FLOW (3 Questions per Wave)
+   ========================================================================== */
+function normalizeAnswer(s) {
+  if (!s) return "";
+  return s.toLowerCase()
+    .replace(/[’‘`´]/g, "'")
+    .replace(/[“”]/g, '"')
+    .replace(/[.,!?;:]/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function nextGameQuestion() {
+  gamePhase = "question";
+  document.getElementById("panel_shop").classList.add("hidden");
+  document.getElementById("panel_question").classList.remove("hidden");
+  var fb = document.getElementById("game_feedback_box");
+  fb.className = "feedback-box";
+  fb.style.display = "none";
+  fb.innerHTML = "";
+  document.getElementById("btn_submit_game").style.display = "inline-flex";
+
+  var waveList = WAVE_QUESTIONS[Math.min(currentWave - 1, WAVE_QUESTIONS.length - 1)];
+  var qId = waveList[waveSubQ % waveList.length];
+  curQuestion = ALL_POOL.find(function(it) { return it.id === qId; }) || ALL_POOL[0];
+
+  document.getElementById("gq_counter").textContent = "CÂU " + (waveSubQ + 1) + " / 3 (WAVE " + currentWave + ")";
+  
+  var modeLabel = (curQuestion.inputMode === "type") ? " • ⌨️ TỰ GÕ BÀN PHÍM" : " • 🧩 CHỌN TỪ GHÉP CÂU";
+  document.getElementById("gq_badge").textContent = curQuestion.badge + modeLabel;
+  document.getElementById("gq_badge").className = "badge-level " + (curQuestion.var === 1 ? "l1" : (curQuestion.var === 2 ? "l2" : "l3"));
+  document.getElementById("gq_category").textContent = curQuestion.type === "rewrite" ? "✍️ VIẾT LẠI CÂU" : "🧩 DẠNG CỦA TỪ (WORD FORM)";
+
+  document.getElementById("game_clue_box").innerHTML = curQuestion.clue;
+  document.getElementById("game_clue_box").classList.remove("show");
+
+  // Mode Banner
+  var banner = document.getElementById("gq_mode_banner");
+  var bannerIcon = document.getElementById("gq_mode_icon");
+  var bannerText = document.getElementById("gq_mode_text");
+  if (curQuestion.inputMode === "type") {
+    banner.className = "mode-instruction-banner type-banner";
+    bannerIcon.textContent = "⌨️";
+    bannerText.innerHTML = "<strong>CHẾ ĐỘ TỰ GÕ BÀN PHÍM:</strong> Em hãy tự gõ câu trả lời hoàn chỉnh (không dùng thẻ từ) để rèn phản xạ viết đúng chính tả.";
+  } else {
+    banner.className = "mode-instruction-banner chips-banner";
+    bannerIcon.textContent = "🧩";
+    bannerText.innerHTML = "<strong>CHẾ ĐỘ CHỌN TỪ:</strong> Nhấp vào các thẻ từ hoặc phương án bên dưới để hoàn thành câu.";
+  }
+
+  var rewriteArea = document.getElementById("gq_answer_area_rewrite");
+  var wordformMC = document.getElementById("gq_answer_area_wordform");
+  var wordformType = document.getElementById("gq_answer_area_wf_typing");
+
+  if (curQuestion.type === "rewrite") {
+    rewriteArea.style.display = "block";
+    wordformMC.style.display = "none";
+    wordformType.style.display = "none";
+    document.getElementById("gq_orig_label").textContent = "CÂU GỐC CẦN VIẾT LẠI:";
+    document.getElementById("gq_orig_text").textContent = curQuestion.orig;
+    document.getElementById("gq_lead_text").textContent = curQuestion.lead + " ...";
+    document.getElementById("gq_text_input").value = "";
+
+    if (curQuestion.inputMode === "type") {
+      document.getElementById("gq_bank_chips").style.display = "none";
+      document.getElementById("gq_text_input").placeholder = "✍️ Dùng bàn phím tự gõ câu hoàn chỉnh vào đây...";
+      var placedBox = document.getElementById("gq_chips_placed_box");
+      var inp = document.getElementById("gq_text_input");
+      placedBox.innerHTML = "";
+      placedBox.appendChild(inp);
+      setTimeout(function() { inp.focus(); }, 150);
+    } else {
+      document.getElementById("gq_bank_chips").style.display = "flex";
+      document.getElementById("gq_text_input").placeholder = "Bấm chọn các từ bên dưới hoặc gõ trực tiếp...";
+      renderGameChips();
+    }
+  } else {
+    rewriteArea.style.display = "none";
+    document.getElementById("gq_orig_label").textContent = "CHO DẠNG ĐÚNG CỦA TỪ TRONG NGOẶC:";
+    document.getElementById("gq_orig_text").textContent = curQuestion.sent;
+    document.getElementById("gq_lead_text").textContent = "Từ gốc: [" + curQuestion.root + "] • " + curQuestion.meaningVn;
+
+    if (curQuestion.inputMode === "type") {
+      wordformMC.style.display = "none";
+      wordformType.style.display = "block";
+      var wfInp = document.getElementById("gq_wf_text_input");
+      wfInp.value = "";
+      wfInp.placeholder = "✍️ Tự gõ dạng đúng của từ [" + curQuestion.root + "] vào đây...";
+      setTimeout(function() { wfInp.focus(); }, 150);
+    } else {
+      wordformMC.style.display = "grid";
+      wordformType.style.display = "none";
+      renderWordformChoices();
+    }
+  }
+}
+
+var gamePlacedChips = [];
+function renderGameChips() {
+  gamePlacedChips = [];
+  var placedBox = document.getElementById("gq_chips_placed_box");
+  var input = document.getElementById("gq_text_input");
+  placedBox.innerHTML = "";
+  placedBox.appendChild(input);
+
+  var bank = document.getElementById("gq_bank_chips");
+  bank.innerHTML = "";
+  
+  if (!curQuestion.chips) return;
+  var shuffled = curQuestion.chips.slice().sort(function() { return Math.random() - 0.5; });
+  shuffled.forEach(function(word, idx) {
+    var btn = document.createElement("button");
+    btn.className = "bank-chip";
+    btn.textContent = word;
+    btn.id = "g_chip_" + idx;
+    btn.onclick = function() {
+      if (btn.classList.contains("used")) return;
+      btn.classList.add("used");
+      addPlacedChip(word, btn);
+    };
+    bank.appendChild(btn);
+  });
+}
+
+function addPlacedChip(word, originBtn) {
+  var placedBox = document.getElementById("gq_chips_placed_box");
+  var input = document.getElementById("gq_text_input");
+
+  var chip = document.createElement("div");
+  chip.className = "placed-chip";
+  chip.textContent = word;
+  chip.onclick = function() {
+    placedBox.removeChild(chip);
+    originBtn.classList.remove("used");
+    syncInputFromChips();
+  };
+  placedBox.insertBefore(chip, input);
+  syncInputFromChips();
+}
+
+function syncInputFromChips() {
+  var placed = document.querySelectorAll("#gq_chips_placed_box .placed-chip");
+  var words = [];
+  placed.forEach(function(c) { words.push(c.textContent.replace("×", "").trim()); });
+  var input = document.getElementById("gq_text_input");
+  input.value = words.join(" ");
+}
+
+function focusGameInput() {
+  document.getElementById("gq_text_input").focus();
+}
+
+function resetGameAnswer() {
+  if (curQuestion.type === "rewrite") {
+    if (curQuestion.inputMode === "chips") {
+      renderGameChips();
+    } else {
+      var inp = document.getElementById("gq_text_input");
+      inp.value = "";
+      inp.focus();
+    }
+  } else {
+    if (curQuestion.inputMode === "chips") {
+      document.querySelectorAll(".mc-option-btn").forEach(function(b) { b.classList.remove("selected"); });
+      selectedWFOption = "";
+    } else {
+      var wfInp = document.getElementById("gq_wf_text_input");
+      wfInp.value = "";
+      wfInp.focus();
+    }
+  }
+}
+
+var selectedWFOption = "";
+function renderWordformChoices() {
+  selectedWFOption = "";
+  var grid = document.getElementById("gq_answer_area_wordform");
+  grid.innerHTML = "";
+  if (!curQuestion.options) return;
+  curQuestion.options.forEach(function(opt, idx) {
+    var btn = document.createElement("button");
+    btn.className = "mc-option-btn";
+    btn.innerHTML = '<span class="mc-opt-letter">' + String.fromCharCode(65 + idx) + '</span> ' + opt;
+    btn.onclick = function() {
+      document.querySelectorAll(".mc-option-btn").forEach(function(b) { b.classList.remove("selected"); });
+      btn.classList.add("selected");
+      selectedWFOption = opt;
+    };
+    grid.appendChild(btn);
+  });
+}
+
+function toggleGameClue() {
+  var box = document.getElementById("game_clue_box");
+  box.classList.toggle("show");
+}
+
+function speakCurrentSentence() {
+  if (curQuestion.type === "rewrite") {
+    speakText(curQuestion.target);
+  } else {
+    speakText(curQuestion.sent.replace("______________", curQuestion.ans));
+  }
+}
+
+function submitGameAnswer() {
+  var isCorrect = false;
+  var userText = "";
+
+  if (curQuestion.type === "rewrite") {
+    userText = document.getElementById("gq_text_input").value.trim();
+    if (!userText) {
+      banner("Vui lòng gõ hoặc chọn câu trả lời!", "bad");
+      return;
+    }
+    var cleanUser = normalizeAnswer(userText);
+    var cleanLeadPlusUser = normalizeAnswer(curQuestion.lead + " " + userText);
+
+    var targets = [curQuestion.target].concat(curQuestion.accept || []);
+    for (var i = 0; i < targets.length; i++) {
+      var cleanTarget = normalizeAnswer(targets[i]);
+      if (cleanUser === cleanTarget || cleanLeadPlusUser === cleanTarget) {
+        isCorrect = true;
+        break;
+      }
+    }
+  } else {
+    if (curQuestion.inputMode === "type") {
+      userText = document.getElementById("gq_wf_text_input").value.trim();
+      if (!userText) {
+        banner("Vui lòng gõ dạng đúng của từ!", "bad");
+        return;
+      }
+      isCorrect = (normalizeAnswer(userText) === normalizeAnswer(curQuestion.ans));
+    } else {
+      if (!selectedWFOption) {
+        banner("Vui lòng chọn một đáp án!", "bad");
+        return;
+      }
+      isCorrect = (normalizeAnswer(selectedWFOption) === normalizeAnswer(curQuestion.ans));
+    }
+  }
+
+  var fb = document.getElementById("game_feedback_box");
+  fb.style.display = "block";
+  document.getElementById("btn_submit_game").style.display = "none";
+
+  if (isCorrect) {
+    streak++;
+    gameScore++;
+    var bonus = streak >= 6 ? 10 : (streak >= 3 ? 5 : 0);
+    var earned = 10 + bonus;
+    addCoins(earned);
+    Sound.correct();
+    Sound.coin();
+
+    fb.className = "feedback-box correct";
+    fb.innerHTML = '<strong>✓ CHÍNH XÁC! +' + earned + ' 🪙</strong>' +
+      (bonus > 0 ? ' (Chuỗi đúng 🔥 x' + streak + ' nhận thưởng thêm!)' : '') + '<br>' +
+      curQuestion.explain;
+    banner("Tuyệt vời! +" + earned + " xu", "good");
+  } else {
+    streak = 0;
+    Sound.wrong();
+    fb.className = "feedback-box wrong";
+    var modelAns = curQuestion.type === "rewrite" ? curQuestion.target : curQuestion.ans;
+    fb.innerHTML = '<strong>✗ CHƯA CHÍNH XÁC!</strong><br>' +
+      'Đáp án chuẩn: <strong>' + modelAns + '</strong><br>' +
+      curQuestion.explain;
+    banner("Tiếc quá! Hãy ghi nhớ đáp án nhé", "bad");
+  }
+
+  updateGameHUD();
+
+  setTimeout(function() {
+    waveSubQ++;
+    if (waveSubQ >= 3) {
+      waveSubQ = 0;
+      openShop();
+    } else {
+      nextGameQuestion();
+    }
+  }, 2400);
+}
+
+/* ==========================================================================
+   DEFENSE SHOP LOGIC
+   ========================================================================== */
+function openShop() {
+  gamePhase = "shop";
+  document.getElementById("panel_question").classList.add("hidden");
+  document.getElementById("panel_shop").classList.remove("hidden");
+
+  var bossInfo = BOSS_LIST[Math.min(currentWave - 1, BOSS_LIST.length - 1)];
+  document.getElementById("shop_boss_ico").textContent = bossInfo.ico;
+  document.getElementById("shop_boss_name").textContent = "⚠️ Wave " + currentWave + " Boss: " + bossInfo.name + " (HP: " + bossInfo.hp + ")";
+  document.getElementById("shop_boss_desc").textContent = bossInfo.desc;
+
+  renderShop();
+}
+
+function renderShop() {
+  var grid = document.getElementById("shop_cards_container");
+  if (!grid) return;
+  grid.innerHTML = "";
+
+  var order = ["archer", "frostMage", "catapult", "wizard", "knight", "dragon", "caltrops", "repair"];
+  order.forEach(function(key) {
+    var d = DEFENDER_CONFIG[key];
+    var owned = garrison[key] || 0;
+    var maxed = (key !== "repair") && (owned >= d.cap);
+    var canBuy = !maxed && (totalCoins >= d.cost);
+    if (key === "repair") {
+      canBuy = (totalCoins >= d.cost) && (castleHP < CASTLE_MAX_HP);
+    }
+
+    var card = document.createElement("div");
+    card.className = "shop-card" + (maxed ? " maxed" : (canBuy ? "" : " cant"));
+
+    var ico = "🏹";
+    if (key === "frostMage") ico = "❄️";
+    else if (key === "catapult") ico = "☄️";
+    else if (key === "wizard") ico = "⚡";
+    else if (key === "knight") ico = "🛡️";
+    else if (key === "dragon") ico = "🐉";
+    else if (key === "caltrops") ico = "🪤";
+    else if (key === "repair") ico = "🧱";
+
+    card.innerHTML = 
+      '<div class="unit-icon">' + ico + '</div>' +
+      '<div class="unit-name">' + d.name + '</div>' +
+      '<div class="unit-desc">' + d.desc + '</div>' +
+      (key !== "repair" ? '<div class="unit-owned">' + owned + ' / ' + d.cap + '</div>' : '<div class="unit-owned">HP: ' + castleHP + '/' + CASTLE_MAX_HP + '</div>') +
+      '<button class="btn-buy" ' + (canBuy ? '' : 'disabled') + ' onclick="buyDefenseItem(&quot;' + key + '&quot;)">' +
+        (maxed ? 'TỐI ĐA' : '🪙 ' + d.cost) +
+      '</button>';
+
+    grid.appendChild(card);
+  });
+}
+
+function buyDefenseItem(key) {
+  var d = DEFENDER_CONFIG[key];
+  if (key === "repair") {
+    if (spendCoins(d.cost)) {
+      castleHP = Math.min(CASTLE_MAX_HP, castleHP + 3);
+      Sound.coin();
+      updateGameHUD();
+      renderShop();
+      banner("Đã sửa chữa +3 máu thành!", "good");
+    }
+  } else {
+    if (garrison[key] < d.cap && spendCoins(d.cost)) {
+      garrison[key]++;
+      Sound.coin();
+      updateGameHUD();
+      renderShop();
+      banner("Đã tuyển mộ " + d.name + "!", "good");
+    }
+  }
+}
+
+/* ==========================================================================
+   BATTLE WAVE SIMULATION & CANVAS DRAWING
+   ========================================================================== */
+function startBattleWave() {
+  gamePhase = "battle";
+  document.getElementById("panel_shop").classList.add("hidden");
+  document.getElementById("panel_question").classList.add("hidden");
+
+  enemies = [];
+  shots = [];
+  fx = [];
+  knights = [];
+  caltropTraps = [];
+  spawnQueue = [];
+  spawnTimer = 0;
+
+  for (var i = 0; i < garrison.knight; i++) {
+    knights.push({
+      x: WALL_X + 24,
+      y: GATE_Y + ((i % 3) - 1) * 32,
+      hp: DEFENDER_CONFIG.knight.hp,
+      maxhp: DEFENDER_CONFIG.knight.hp,
+      cd: 0,
+      target: null,
+      dead: false
+    });
+  }
+
+  for (var c = 0; c < garrison.caltrops; c++) {
+    caltropTraps.push({
+      x: WALL_X + 160 + c * 80,
+      y: GATE_Y + (c % 2 === 0 ? -12 : 12),
+      hp: 3,
+      active: true
+    });
+  }
+
+  var bossInfo = BOSS_LIST[Math.min(currentWave - 1, BOSS_LIST.length - 1)];
+  var monsterCount = 4 + currentWave * 2;
+  var gap = 0.8 - Math.min(0.3, currentWave * 0.03);
+
+  for (var m = 0; m < monsterCount; m++) {
+    var kind = (currentWave <= 2) ? "goblin" : ((currentWave <= 5) ? (m % 2 === 0 ? "goblin" : "orc") : (m % 3 === 0 ? "troll" : "orc"));
+    var mhp = kind === "troll" ? (28 + currentWave * 6) : (kind === "orc" ? (16 + currentWave * 4) : (8 + currentWave * 2));
+    var mspd = kind === "goblin" ? 52 : (kind === "orc" ? 36 : 26);
+    
+    spawnQueue.push({
+      delay: m * gap,
+      kind: kind,
+      hp: mhp,
+      maxhp: mhp,
+      spd: mspd,
+      y: GATE_Y + (Math.random() * 80 - 40),
+      isBoss: false
+    });
+  }
+
+  spawnQueue.push({
+    delay: (monsterCount + 1) * gap * 0.7,
+    kind: "boss",
+    bossData: bossInfo,
+    hp: bossInfo.hp,
+    maxhp: bossInfo.hp,
+    spd: bossInfo.spd,
+    y: GATE_Y,
+    sc: bossInfo.sc,
+    isBoss: true
+  });
+
+  banner("⚔️ QUÁI VẬT TẤN CÔNG WAVE " + currentWave + "! ⚔️", "info");
+}
+
+var animClock = 0;
+var lastTime = performance.now();
+function gameLoop(now) {
+  var dt = Math.min(0.1, (now - lastTime) / 1000);
+  lastTime = now;
+  animClock += dt;
+
+  if (gamePhase === "battle") {
+    updateBattle(dt);
+  }
+  drawBattle();
+
+  requestAnimationFrame(gameLoop);
+}
+requestAnimationFrame(gameLoop);
+
+function updateBattle(dt) {
+  spawnTimer += dt;
+
+  for (var i = spawnQueue.length - 1; i >= 0; i--) {
+    if (spawnTimer >= spawnQueue[i].delay) {
+      var s = spawnQueue[i];
+      enemies.push({
+        x: 1260,
+        y: s.y,
+        kind: s.kind,
+        bossData: s.bossData,
+        hp: s.hp,
+        maxhp: s.maxhp,
+        spd: s.spd,
+        sc: s.sc || (s.kind === "troll" ? 1.35 : (s.kind === "orc" ? 1.1 : 0.88)),
+        isBoss: s.isBoss,
+        slowTimer: 0,
+        hitFlash: 0,
+        walkPhase: Math.random() * 6.28,
+        dead: false,
+        fall: 0,
+        blocker: null
+      });
+      spawnQueue.splice(i, 1);
+    }
+  }
+
+  knights.forEach(function(k) {
+    if (k.dead) return;
+    if (k.target && k.target.dead) k.target = null;
+    if (!k.target) {
+      var bestD = 1e9;
+      enemies.forEach(function(e) {
+        if (e.dead) return;
+        var d = Math.hypot(e.x - k.x, e.y - k.y);
+        if (d < bestD) { bestD = d; k.target = e; }
+      });
+    }
+    if (k.target) {
+      var dx = k.target.x - k.x, dy = k.target.y - k.y;
+      var dist = Math.hypot(dx, dy);
+      if (dist > 30) {
+        k.x += (dx / dist) * 70 * dt;
+        k.y += (dy / dist) * 70 * dt;
+      } else {
+        k.target.blocker = k;
+        k.cd -= dt;
+        if (k.cd <= 0) {
+          k.target.hp -= DEFENDER_CONFIG.knight.dmg;
+          k.target.hitFlash = 0.14;
+          k.cd = DEFENDER_CONFIG.knight.cd;
+          Sound.hit();
+          fx.push({ kind: "slash", x: (k.x + k.target.x)/2, y: (k.y + k.target.y)/2, life: 0.25, max: 0.25 });
+          if (k.target.hp <= 0) {
+            k.target.dead = true;
+            k.target = null;
+          }
+        }
+      }
+    }
+  });
+
+  caltropTraps.forEach(function(trp) {
+    if (!trp.active) return;
+    enemies.forEach(function(e) {
+      if (e.dead) return;
+      if (Math.hypot(e.x - trp.x, e.y - trp.y) < 25) {
+        e.hp -= DEFENDER_CONFIG.caltrops.dmg;
+        e.hitFlash = 0.14;
+        trp.hp--;
+        Sound.hit();
+        fx.push({ kind: "blood", x: e.x, y: e.y, life: 0.25, max: 0.25 });
+        if (trp.hp <= 0) trp.active = false;
+        if (e.hp <= 0) e.dead = true;
+      }
+    });
+  });
+
+  enemies.forEach(function(e) {
+    if (e.dead) {
+      e.fall += dt;
+      return;
+    }
+    if (e.slowTimer > 0) e.slowTimer -= dt;
+    if (e.hitFlash > 0) e.hitFlash -= dt;
+
+    if (e.blocker && !e.blocker.dead) {
+      e.blocker.hp -= (e.isBoss ? 12 : 4) * dt;
+      if (e.blocker.hp <= 0) {
+        e.blocker.dead = true;
+        e.blocker = null;
+      }
+    } else {
+      var curSpd = (e.slowTimer > 0) ? (e.spd * 0.5) : e.spd;
+      e.x -= curSpd * dt;
+      e.walkPhase += dt * curSpd * 0.18;
+    }
+
+    if (e.x <= WALL_X) {
+      e.dead = true;
+      castleHP = Math.max(0, castleHP - (e.isBoss ? 5 : 1));
+      Sound.boom();
+      fx.push({ kind: "boom", x: WALL_X + 10, y: e.y, life: 0.38, max: 0.38 });
+      updateGameHUD();
+      if (castleHP <= 0) {
+        endBattle(false);
+        return;
+      }
+    }
+  });
+
+  fireTurrets(dt);
+
+  for (var s = shots.length - 1; s >= 0; s--) {
+    var sh = shots[s];
+    if (sh.tg.dead) { shots.splice(s, 1); continue; }
+    var dx = sh.tg.x - sh.x, dy = sh.tg.y - sh.y;
+    var dist = Math.hypot(dx, dy);
+    var move = sh.spd * dt;
+    sh.ang = Math.atan2(dy, dx);
+
+    if (dist <= move + 12) {
+      sh.tg.hp -= sh.dmg;
+      sh.tg.hitFlash = 0.12;
+      if (sh.kind === "frost") {
+        sh.tg.slowTimer = 3.0;
+        Sound.freeze();
+        fx.push({ kind: "frost_burst", x: sh.tg.x, y: sh.tg.y, life: 0.35, max: 0.35 });
+      } else if (sh.kind === "catapult") {
+        Sound.boom();
+        fx.push({ kind: "boom", x: sh.tg.x, y: sh.tg.y, life: 0.45, max: 0.45 });
+        enemies.forEach(function(near) {
+          if (!near.dead && Math.hypot(near.x - sh.tg.x, near.y - sh.tg.y) < 75) {
+            near.hp -= sh.dmg * 0.6;
+            near.hitFlash = 0.15;
+            if (near.hp <= 0) near.dead = true;
+          }
+        });
+      } else {
+        Sound.hit();
+        fx.push({ kind: "spark", x: sh.tg.x, y: sh.tg.y, life: 0.22, max: 0.22 });
+      }
+
+      if (sh.tg.hp <= 0) sh.tg.dead = true;
+      shots.splice(s, 1);
+    } else {
+      sh.x += (dx / dist) * move;
+      sh.y += (dy / dist) * move;
+    }
+  }
+
+  for (var f = fx.length - 1; f >= 0; f--) {
+    fx[f].life -= dt;
+    if (fx[f].life <= 0) fx.splice(f, 1);
+  }
+
+  var activeMonsters = spawnQueue.length > 0;
+  enemies.forEach(function(e) { if (!e.dead) activeMonsters = true; });
+  if (!activeMonsters && gamePhase === "battle") {
+    endBattle(true);
+  }
+}
+
+var turretCd = { archer: 0, frostMage: 0, catapult: 0, wizard: 0, dragon: 0 };
+function fireTurrets(dt) {
+  var frontTarget = null, minX = 1e9;
+  enemies.forEach(function(e) {
+    if (!e.dead && e.x < minX) { minX = e.x; frontTarget = e; }
+  });
+  if (!frontTarget) return;
+
+  if (garrison.archer > 0) {
+    turretCd.archer -= dt;
+    if (turretCd.archer <= 0) {
+      for (var a = 0; a < garrison.archer; a++) {
+        shots.push({
+          x: WALL_X - 24,
+          y: 205 + a * 30,
+          tg: frontTarget,
+          dmg: DEFENDER_CONFIG.archer.dmg,
+          spd: DEFENDER_CONFIG.archer.pspd,
+          kind: "arrow"
+        });
+      }
+      Sound.shoot();
+      turretCd.archer = 1 / DEFENDER_CONFIG.archer.rate;
+    }
+  }
+
+  if (garrison.frostMage > 0) {
+    turretCd.frostMage -= dt;
+    if (turretCd.frostMage <= 0) {
+      var target = frontTarget;
+      enemies.forEach(function(e) {
+        if (!e.dead && e.slowTimer <= 0 && e.x < 1100) target = e;
+      });
+      shots.push({
+        x: WALL_X - 24,
+        y: 518,
+        tg: target,
+        dmg: DEFENDER_CONFIG.frostMage.dmg,
+        spd: DEFENDER_CONFIG.frostMage.pspd,
+        kind: "frost"
+      });
+      turretCd.frostMage = 1 / DEFENDER_CONFIG.frostMage.rate;
+    }
+  }
+
+  if (garrison.catapult > 0) {
+    turretCd.catapult -= dt;
+    if (turretCd.catapult <= 0) {
+      shots.push({
+        x: WALL_X - 78,
+        y: 235,
+        tg: frontTarget,
+        dmg: DEFENDER_CONFIG.catapult.dmg,
+        spd: DEFENDER_CONFIG.catapult.pspd,
+        kind: "catapult"
+      });
+      turretCd.catapult = 1 / DEFENDER_CONFIG.catapult.rate;
+    }
+  }
+
+  if (garrison.wizard > 0) {
+    turretCd.wizard -= dt;
+    if (turretCd.wizard <= 0) {
+      shots.push({
+        x: WALL_X - 64,
+        y: 530,
+        tg: frontTarget,
+        dmg: DEFENDER_CONFIG.wizard.dmg,
+        spd: DEFENDER_CONFIG.wizard.pspd,
+        kind: "lightning"
+      });
+      turretCd.wizard = 1 / DEFENDER_CONFIG.wizard.rate;
+    }
+  }
+
+  if (garrison.dragon > 0) {
+    turretCd.dragon -= dt;
+    if (turretCd.dragon <= 0) {
+      shots.push({
+        x: WALL_X - 102,
+        y: 315,
+        tg: frontTarget,
+        dmg: DEFENDER_CONFIG.dragon.dmg,
+        spd: DEFENDER_CONFIG.dragon.pspd,
+        kind: "fire"
+      });
+      turretCd.dragon = 1 / DEFENDER_CONFIG.dragon.rate;
+    }
+  }
+}
+
+var battleEndTimer = null;
+function endBattle(win) {
+  if (gamePhase !== "battle") return;
+  gamePhase = win ? "wave_clear" : "game_over";
+  if (battleEndTimer) clearTimeout(battleEndTimer);
+
+  if (win) {
+    Sound.win();
+    banner("🛡️ CHIẾN THẮNG WAVE " + currentWave + "! TƯỜNG THÀNH BẢO TOÀN!", "good");
+    addCoins(15);
+    battleEndTimer = setTimeout(function() {
+      if (currentWave >= 8) {
+        showEndOverlay(true);
+      } else {
+        currentWave++;
+        waveSubQ = 0;
+        updateGameHUD();
+        nextGameQuestion();
+      }
+    }, 2000);
+  } else {
+    Sound.lose();
+    banner("💀 LÂU ĐÀI ĐÃ THẤT THỦ!", "bad");
+    battleEndTimer = setTimeout(function() {
+      showEndOverlay(false);
+    }, 1800);
+  }
+}
+
+function showEndOverlay(won) {
+  var ov = document.getElementById("game_end_overlay");
+  ov.classList.remove("hidden");
+  if (won) {
+    document.getElementById("end_trophy").textContent = "🏆";
+    document.getElementById("end_title").textContent = "CHIẾN THẮNG VANG DỘI!";
+    document.getElementById("end_desc").textContent = "Bạn đã chỉ huy quân đội bảo vệ lâu đài hoàn thành 8 đợt sóng và làm chủ hoàn toàn Unit 4!";
+    document.getElementById("end_score").textContent = gameScore + " / 24 câu đúng";
+  } else {
+    document.getElementById("end_trophy").textContent = "🛡️";
+    document.getElementById("end_title").textContent = "LÂU ĐÀI ĐÃ THẤT THỦ";
+    document.getElementById("end_desc").textContent = "Quái vật đã tràn qua thành lũy ở Wave " + currentWave + ". Hãy luyện tập lại câu hỏi để nâng cấp vũ khí mạnh hơn nhé!";
+    document.getElementById("end_score").textContent = "Dừng lại ở Wave " + currentWave;
+  }
+}
+
+function restartGame() {
+  if (battleEndTimer) clearTimeout(battleEndTimer);
+  enemies = [];
+  shots = [];
+  fx = [];
+  knights = [];
+  caltropTraps = [];
+  spawnQueue = [];
+  document.getElementById("game_end_overlay").classList.add("hidden");
+  castleHP = CASTLE_MAX_HP;
+  currentWave = 1;
+  waveSubQ = 0;
+  streak = 0;
+  gameScore = 0;
+  totalCoins = 30;
+  garrison = { archer: 2, frostMage: 1, catapult: 0, wizard: 0, knight: 1, dragon: 0, caltrops: 1 };
+  updateGameHUD();
+  nextGameQuestion();
+}
+
+/* ==========================================================================
+   CANVAS DRAWING ROUTINES (Stylized Minimal 2D Vector Art & Animations)
+   ========================================================================== */
+function drawRoundRectPath(x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.lineTo(x + w - r, y);
+  ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+  ctx.lineTo(x + w, y + h - r);
+  ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+  ctx.lineTo(x + r, y + h);
+  ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+  ctx.lineTo(x, y + r);
+  ctx.quadraticCurveTo(x, y, x + r, y);
+  ctx.closePath();
+}
+
+function drawCloud(cx, cy, sc) {
+  ctx.save();
+  ctx.translate(cx, cy);
+  ctx.scale(sc, sc);
+  ctx.fillStyle = "rgba(255, 255, 255, 0.85)";
+  ctx.beginPath();
+  ctx.arc(0, 0, 22, 0, Math.PI * 2);
+  ctx.arc(24, -4, 26, 0, Math.PI * 2);
+  ctx.arc(52, 0, 20, 0, Math.PI * 2);
+  ctx.arc(24, 8, 22, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.restore();
+}
+
+function drawPineTree(tx, ty, sc, col) {
+  ctx.save();
+  ctx.translate(tx, ty);
+  ctx.scale(sc, sc);
+  ctx.fillStyle = "#78350F";
+  ctx.fillRect(-3, 0, 6, 12);
+  ctx.fillStyle = col;
+  ctx.beginPath(); ctx.moveTo(0, -34); ctx.lineTo(-16, -8); ctx.lineTo(16, -8); ctx.closePath(); ctx.fill();
+  ctx.beginPath(); ctx.moveTo(0, -22); ctx.lineTo(-20, 2); ctx.lineTo(20, 2); ctx.closePath(); ctx.fill();
+  ctx.restore();
+}
+
+function drawBattle() {
+  // 1. Sky Gradient & Warm Sun
+  var skyGrad = ctx.createLinearGradient(0, 0, 0, 285);
+  skyGrad.addColorStop(0, "#7DD3FC");
+  skyGrad.addColorStop(0.65, "#E0F2FE");
+  skyGrad.addColorStop(1, "#FEF9C3");
+  ctx.fillStyle = skyGrad;
+  ctx.fillRect(0, 0, 1280, 285);
+
+  // Soft Sun Glow
+  ctx.fillStyle = "rgba(253, 224, 71, 0.25)";
+  ctx.beginPath(); ctx.arc(1120, 88, 56, 0, Math.PI * 2); ctx.fill();
+  ctx.fillStyle = "#FDE047";
+  ctx.beginPath(); ctx.arc(1120, 88, 32, 0, Math.PI * 2); ctx.fill();
+
+  // Drifting Clouds
+  drawCloud(1350 - ((animClock * 12) % 1550), 68, 1.0);
+  drawCloud(1350 - ((animClock * 8 + 520) % 1550), 112, 0.78);
+  drawCloud(1350 - ((animClock * 15 + 1040) % 1550), 58, 1.15);
+
+  // Distant Pastel Hills
+  ctx.fillStyle = "#A7F3D0";
+  ctx.beginPath();
+  ctx.moveTo(0, 275);
+  ctx.quadraticCurveTo(320, 195, 640, 255);
+  ctx.quadraticCurveTo(960, 185, 1280, 245);
+  ctx.lineTo(1280, 285); ctx.lineTo(0, 285);
+  ctx.fill();
+
+  ctx.fillStyle = "#6EE7B7";
+  ctx.beginPath();
+  ctx.moveTo(0, 275);
+  ctx.quadraticCurveTo(450, 220, 820, 268);
+  ctx.quadraticCurveTo(1080, 225, 1280, 265);
+  ctx.lineTo(1280, 285); ctx.lineTo(0, 285);
+  ctx.fill();
+
+  // Horizon Pine Silhouettes
+  drawPineTree(360, 266, 0.85, "#059669");
+  drawPineTree(410, 269, 0.7, "#10B981");
+  drawPineTree(780, 264, 0.9, "#059669");
+  drawPineTree(1040, 265, 0.8, "#059669");
+  drawPineTree(1080, 270, 0.65, "#10B981");
+  drawPineTree(1210, 266, 0.9, "#047857");
+
+  // 2. Meadow Grass Field with Subtle Turf Bands
+  var grassGrad = ctx.createLinearGradient(0, 275, 0, 720);
+  grassGrad.addColorStop(0, "#84CC16");
+  grassGrad.addColorStop(1, "#65A30D");
+  ctx.fillStyle = grassGrad;
+  ctx.fillRect(0, 275, 1280, 445);
+
+  ctx.fillStyle = "rgba(255, 255, 255, 0.08)";
+  for (var band = 0; band < 6; band++) {
+    ctx.fillRect(260 + band * 180, 275, 90, 445);
+  }
+
+  // Decorative Grass Tufts & Flowers
+  ctx.strokeStyle = "#4D7C0F";
+  ctx.lineWidth = 2;
+  var tufts = [[340,330],[520,310],[740,340],[980,315],[1140,345],[380,580],[610,620],[860,575],[1090,635],[1200,565]];
+  tufts.forEach(function(pt) {
+    ctx.beginPath();
+    ctx.moveTo(pt[0], pt[1]); ctx.lineTo(pt[0] - 4, pt[1] - 8);
+    ctx.moveTo(pt[0], pt[1]); ctx.lineTo(pt[0] + 1, pt[1] - 10);
+    ctx.moveTo(pt[0], pt[1]); ctx.lineTo(pt[0] + 6, pt[1] - 7);
+    ctx.stroke();
+  });
+
+  // 3. Cobblestone Dirt Road to Castle Gate
+  ctx.fillStyle = "#D6B78A";
+  ctx.fillRect(WALL_X, GATE_Y - 48, 1280 - WALL_X, 96);
+  ctx.fillStyle = "#E5CCA4";
+  ctx.fillRect(WALL_X, GATE_Y - 40, 1280 - WALL_X, 80);
+
+  // Path Curb Stones & Texture
+  ctx.fillStyle = "#A8A29E";
+  ctx.strokeStyle = "#57534E";
+  ctx.lineWidth = 1.5;
+  for (var rx = WALL_X + 18; rx < 1280; rx += 54) {
+    drawRoundRectPath(rx, GATE_Y - 52, 34, 10, 4); ctx.fill(); ctx.stroke();
+    drawRoundRectPath(rx + 22, GATE_Y + 42, 34, 10, 4); ctx.fill(); ctx.stroke();
+    // Subtle path pebbles
+    ctx.fillStyle = "rgba(180, 148, 106, 0.45)";
+    ctx.beginPath(); ctx.ellipse(rx + 15, GATE_Y - 10 + ((rx % 3) * 8), 8, 4, 0, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = "#A8A29E";
+  }
+
+  // 4. Fortress Castle Wall
+  drawCastleWall();
+
+  // 5. Iron Caltrops on Road
+  caltropTraps.forEach(function(trp) {
+    if (!trp.active) return;
+    ctx.save();
+    ctx.translate(trp.x, trp.y);
+    ctx.fillStyle = "rgba(0,0,0,0.22)";
+    ctx.beginPath(); ctx.ellipse(0, 7, 15, 5, 0, 0, Math.PI * 2); ctx.fill();
+    for (var p = -9; p <= 9; p += 9) {
+      ctx.fillStyle = "#475569";
+      ctx.strokeStyle = "#1E293B";
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(p - 5, 5); ctx.lineTo(p, -9); ctx.lineTo(p + 5, 5); ctx.closePath();
+      ctx.fill(); ctx.stroke();
+      ctx.fillStyle = "#E2E8F0";
+      ctx.beginPath(); ctx.moveTo(p, -9); ctx.lineTo(p - 2, -2); ctx.lineTo(p + 1, -2); ctx.closePath(); ctx.fill();
+    }
+    ctx.restore();
+  });
+
+  // 6. Garrison Defenders on Wall
+  drawDefenders();
+
+  // 7. Paladin Knights on the Road
+  knights.forEach(function(k) {
+    if (k.dead) return;
+    ctx.save();
+    ctx.translate(k.x, k.y);
+    var kbob = k.target && Math.hypot(k.target.x - k.x, k.target.y - k.y) <= 34 ? 0 : Math.abs(Math.sin(animClock * 8)) * 3;
+    var swordSwing = k.cd > 0.45 ? Math.sin((0.8 - k.cd) * 14) * 0.7 : 0;
+
+    // Ground Shadow
+    ctx.fillStyle = "rgba(0,0,0,0.25)";
+    ctx.beginPath(); ctx.ellipse(0, 12, 16, 6, 0, 0, Math.PI * 2); ctx.fill();
+
+    ctx.translate(0, -kbob);
+    ctx.strokeStyle = "#1E293B";
+    ctx.lineWidth = 2;
+
+    // Knight Cape
+    ctx.fillStyle = "#1D4ED8";
+    ctx.beginPath(); ctx.moveTo(-10, -18); ctx.lineTo(-18, 8); ctx.lineTo(-4, 8); ctx.closePath(); ctx.fill(); ctx.stroke();
+
+    // Armored Body & Blue Surcoat
+    ctx.fillStyle = "#94A3B8";
+    drawRoundRectPath(-11, -18, 22, 26, 5); ctx.fill(); ctx.stroke();
+    ctx.fillStyle = "#2563EB";
+    ctx.fillRect(-7, -14, 14, 18);
+
+    // Sword Arm & Broadsword
+    ctx.save();
+    ctx.translate(10, -10);
+    ctx.rotate(swordSwing);
+    ctx.fillStyle = "#F8FAFC";
+    ctx.beginPath(); ctx.moveTo(-2, 0); ctx.lineTo(-2, -24); ctx.lineTo(0, -30); ctx.lineTo(2, -24); ctx.lineTo(2, 0); ctx.closePath();
+    ctx.fill(); ctx.stroke();
+    ctx.fillStyle = "#F59E0B";
+    ctx.fillRect(-6, -2, 12, 4);
+    ctx.restore();
+
+    // Helmet & Red Plume
+    ctx.fillStyle = "#EF4444";
+    ctx.beginPath(); ctx.ellipse(-2, -37, 8, 5, -0.3, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+    ctx.fillStyle = "#E2E8F0";
+    ctx.beginPath(); ctx.arc(0, -25, 11, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+    ctx.fillStyle = "#1E293B";
+    ctx.fillRect(1, -27, 9, 3); // Visor slit
+
+    // Kite Shield with Gold Cross
+    ctx.fillStyle = "#3B82F6";
+    ctx.beginPath(); ctx.moveTo(-17, -15); ctx.lineTo(-5, -15); ctx.lineTo(-5, -1); ctx.lineTo(-11, 6); ctx.lineTo(-17, -1); ctx.closePath();
+    ctx.fill(); ctx.stroke();
+    ctx.fillStyle = "#FACC15";
+    ctx.fillRect(-12, -13, 2, 14);
+    ctx.fillRect(-15, -9, 8, 2);
+
+    ctx.restore();
+
+    if (k.hp < k.maxhp) {
+      var hpPct = Math.max(0, k.hp / k.maxhp);
+      ctx.fillStyle = "rgba(15, 23, 42, 0.7)";
+      drawRoundRectPath(k.x - 18, k.y - 48, 36, 6, 3); ctx.fill();
+      ctx.fillStyle = "#38BDF8";
+      drawRoundRectPath(k.x - 17, k.y - 47, 34 * hpPct, 4, 2); ctx.fill();
+    }
+  });
+
+  // 8. Monsters & Bosses
+  enemies.forEach(function(e) {
+    ctx.save();
+    ctx.translate(e.x, e.y);
+
+    // Ground Shadow (scales down if falling)
+    if (!e.dead) {
+      ctx.fillStyle = "rgba(0,0,0,0.24)";
+      var shR = (e.isBoss ? 28 : 15) * e.sc;
+      ctx.beginPath(); ctx.ellipse(0, 12 * e.sc, shR, shR * 0.36, 0, 0, Math.PI * 2); ctx.fill();
+    }
+
+    if (e.dead) {
+      ctx.globalAlpha = Math.max(0, 1 - e.fall * 2.2);
+      ctx.rotate(e.fall * 1.6);
+    } else {
+      var bob = Math.abs(Math.sin(e.walkPhase || 0)) * (e.isBoss ? 3.5 : 2.5);
+      var tilt = Math.sin(e.walkPhase || 0) * 0.05;
+      ctx.translate(0, -bob);
+      ctx.rotate(tilt);
+    }
+    ctx.scale(e.sc, e.sc);
+
+    if (e.isBoss) {
+      drawBossSprite(e);
+    } else if (e.kind === "goblin") {
+      drawGoblinSprite(e);
+    } else if (e.kind === "orc") {
+      drawOrcSprite(e);
+    } else {
+      drawTrollSprite(e);
+    }
+
+    // Frost Chilled Aura
+    if (!e.dead && e.slowTimer > 0) {
+      ctx.strokeStyle = "rgba(56, 189, 248, 0.85)";
+      ctx.lineWidth = 2.5;
+      ctx.beginPath(); ctx.arc(0, -10, 22, 0, Math.PI * 2); ctx.stroke();
+      ctx.fillStyle = "#E0F2FE";
+      ctx.beginPath(); ctx.arc(Math.cos(animClock * 4) * 20, -10 + Math.sin(animClock * 4) * 14, 3, 0, Math.PI * 2); ctx.fill();
+    }
+
+    // Hit Flash Overlay
+    if (!e.dead && e.hitFlash > 0) {
+      ctx.fillStyle = "rgba(255, 255, 255, 0.55)";
+      ctx.beginPath(); ctx.arc(0, -14, e.isBoss ? 30 : 18, 0, Math.PI * 2); ctx.fill();
+    }
+    ctx.restore();
+
+    // Rounded Health Bars & Boss Name Tags
+    if (!e.dead) {
+      var bw = e.isBoss ? 92 : 38;
+      var byOff = e.isBoss ? 78 * (e.sc * 0.72) : 40 * e.sc;
+      var f = Math.max(0, e.hp / e.maxhp);
+      ctx.fillStyle = "rgba(15, 23, 42, 0.75)";
+      drawRoundRectPath(e.x - bw/2 - 1, e.y - byOff - 1, bw + 2, e.isBoss ? 9 : 7, 4); ctx.fill();
+      ctx.fillStyle = e.isBoss ? "#EF4444" : (e.slowTimer > 0 ? "#38BDF8" : "#22C55E");
+      if (f > 0) {
+        drawRoundRectPath(e.x - bw/2, e.y - byOff, Math.max(4, bw * f), e.isBoss ? 7 : 5, 3); ctx.fill();
+      }
+      if (e.isBoss) {
+        ctx.font = "bold 12px 'Segoe UI', sans-serif";
+        var lbl = (e.slowTimer > 0 ? "❄️ " : "💀 ") + e.bossData.name;
+        var tw = ctx.measureText(lbl).width;
+        ctx.fillStyle = "rgba(15, 23, 42, 0.75)";
+        drawRoundRectPath(e.x - tw/2 - 8, e.y - byOff - 22, tw + 16, 18, 9); ctx.fill();
+        ctx.fillStyle = "#FEF08A";
+        ctx.fillText(lbl, e.x - tw/2, e.y - byOff - 9);
+      }
+    }
+  });
+
+  // 9. Directional Projectiles with Trails
+  shots.forEach(function(sh) {
+    ctx.save();
+    ctx.translate(sh.x, sh.y);
+    ctx.rotate(sh.ang || 0);
+    if (sh.kind === "arrow") {
+      // Motion trail
+      ctx.strokeStyle = "rgba(255, 255, 255, 0.45)";
+      ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.moveTo(-26, 0); ctx.lineTo(-14, 0); ctx.stroke();
+      // Feather fletching
+      ctx.fillStyle = "#F8FAFC";
+      ctx.beginPath(); ctx.moveTo(-16, 0); ctx.lineTo(-22, -4); ctx.lineTo(-13, -1); ctx.closePath(); ctx.fill();
+      ctx.beginPath(); ctx.moveTo(-16, 0); ctx.lineTo(-22, 4); ctx.lineTo(-13, 1); ctx.closePath(); ctx.fill();
+      // Wooden shaft & iron head
+      ctx.fillStyle = "#78350F"; ctx.fillRect(-14, -1.5, 24, 3);
+      ctx.fillStyle = "#E2E8F0"; ctx.strokeStyle = "#334155"; ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(16, 0); ctx.lineTo(7, -5); ctx.lineTo(9, 0); ctx.lineTo(7, 5); ctx.closePath();
+      ctx.fill(); ctx.stroke();
+    } else if (sh.kind === "frost") {
+      ctx.fillStyle = "rgba(56, 189, 248, 0.35)";
+      ctx.beginPath(); ctx.arc(-6, 0, 8, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = "#38BDF8"; ctx.strokeStyle = "#FFFFFF"; ctx.lineWidth = 1.5;
+      ctx.beginPath(); ctx.moveTo(12, 0); ctx.lineTo(0, -6); ctx.lineTo(-10, 0); ctx.lineTo(0, 6); ctx.closePath();
+      ctx.fill(); ctx.stroke();
+    } else if (sh.kind === "catapult") {
+      ctx.fillStyle = "rgba(245, 158, 11, 0.4)";
+      ctx.beginPath(); ctx.arc(-9, 0, 11, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = "#DC2626"; ctx.strokeStyle = "#7F1D1D"; ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.arc(0, 0, 11, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+      ctx.fillStyle = "#FDE047";
+      ctx.beginPath(); ctx.arc(2, -2, 5, 0, Math.PI * 2); ctx.fill();
+    } else if (sh.kind === "lightning") {
+      ctx.strokeStyle = "#C4B5FD"; ctx.lineWidth = 2.5;
+      ctx.beginPath(); ctx.moveTo(-18, -3); ctx.lineTo(-8, 3); ctx.lineTo(0, -2); ctx.lineTo(10, 0); ctx.stroke();
+      ctx.fillStyle = "#818CF8"; ctx.beginPath(); ctx.arc(0, 0, 8, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = "#FFFFFF"; ctx.beginPath(); ctx.arc(0, 0, 4, 0, Math.PI * 2); ctx.fill();
+    } else {
+      // Dragon fire blast
+      ctx.fillStyle = "#F97316";
+      ctx.beginPath(); ctx.moveTo(14, 0); ctx.quadraticCurveTo(0, -11, -16, 0); ctx.quadraticCurveTo(0, 11, 14, 0); ctx.fill();
+      ctx.fillStyle = "#FEF08A";
+      ctx.beginPath(); ctx.arc(3, 0, 5, 0, Math.PI * 2); ctx.fill();
+    }
+    ctx.restore();
+  });
+
+  // 10. Multi-layered Combat VFX
+  fx.forEach(function(e) {
+    var p = 1 - (e.life / e.max);
+    ctx.save();
+    ctx.translate(e.x, e.y);
+    if (e.kind === "boom") {
+      ctx.strokeStyle = "rgba(239, 68, 68, " + (1 - p) + ")";
+      ctx.lineWidth = 4 * (1 - p);
+      ctx.beginPath(); ctx.arc(0, 0, 16 + p * 48, 0, Math.PI * 2); ctx.stroke();
+      ctx.fillStyle = "rgba(251, 191, 36, " + ((1 - p) * 0.85) + ")";
+      ctx.beginPath(); ctx.arc(0, 0, 10 + p * 30, 0, Math.PI * 2); ctx.fill();
+    } else if (e.kind === "slash") {
+      ctx.strokeStyle = "rgba(224, 242, 254, " + (1 - p) + ")";
+      ctx.lineWidth = 5 * (1 - p);
+      ctx.beginPath(); ctx.arc(0, 0, 22, -0.9, 0.9); ctx.stroke();
+    } else if (e.kind === "frost_burst") {
+      ctx.strokeStyle = "rgba(56, 189, 248, " + (1 - p) + ")";
+      ctx.lineWidth = 3;
+      ctx.beginPath(); ctx.arc(0, 0, 12 + p * 28, 0, Math.PI * 2); ctx.stroke();
+      for (var r = 0; r < 6; r++) {
+        var ang = r * (Math.PI / 3);
+        ctx.beginPath();
+        ctx.moveTo(Math.cos(ang) * 6, Math.sin(ang) * 6);
+        ctx.lineTo(Math.cos(ang) * (14 + p * 18), Math.sin(ang) * (14 + p * 18));
+        ctx.stroke();
+      }
+    } else if (e.kind === "spark" || e.kind === "blood") {
+      ctx.fillStyle = e.kind === "blood" ? "rgba(239, 68, 68, " + (1 - p) + ")" : "rgba(253, 224, 71, " + (1 - p) + ")";
+      for (var sp = 0; sp < 5; sp++) {
+        var sa = sp * 1.25 + p;
+        ctx.beginPath(); ctx.arc(Math.cos(sa) * (6 + p * 16), Math.sin(sa) * (6 + p * 16), 3 * (1 - p), 0, Math.PI * 2); ctx.fill();
+      }
+    }
+    ctx.restore();
+  });
+}
+
+function drawCastleWall() {
+  ctx.save();
+  // Back Watchtower Keep (shifted below HUD pill)
+  ctx.fillStyle = "#64748B";
+  ctx.strokeStyle = "#334155";
+  ctx.lineWidth = 2;
+  ctx.fillRect(14, 152, 88, 100); ctx.strokeRect(14, 152, 88, 100);
+
+  // Conical Keep Roof
+  ctx.fillStyle = "#4338CA";
+  ctx.beginPath(); ctx.moveTo(8, 154); ctx.lineTo(58, 96); ctx.lineTo(108, 154); ctx.closePath();
+  ctx.fill(); ctx.stroke();
+  ctx.fillStyle = "#6366F1";
+  ctx.beginPath(); ctx.moveTo(8, 154); ctx.lineTo(58, 96); ctx.lineTo(58, 154); ctx.closePath(); ctx.fill();
+
+  // Animated Waving Pennant Flag
+  ctx.fillStyle = "#334155"; ctx.fillRect(56, 70, 4, 28);
+  var fw = Math.sin(animClock * 5) * 4;
+  ctx.fillStyle = "#F59E0B";
+  ctx.beginPath(); ctx.moveTo(60, 72); ctx.quadraticCurveTo(80, 72 + fw, 96, 79 - fw * 0.5); ctx.lineTo(60, 86); ctx.closePath();
+  ctx.fill(); ctx.stroke();
+
+  // Main Fortress Wall Body
+  var wallGrad = ctx.createLinearGradient(0, 175, WALL_X, 175);
+  wallGrad.addColorStop(0, "#64748B");
+  wallGrad.addColorStop(0.82, "#94A3B8");
+  wallGrad.addColorStop(1, "#CBD5E1");
+  ctx.fillStyle = wallGrad;
+  ctx.fillRect(0, 175, WALL_X, 495);
+
+  // Subtle Stone Masonry Blocks
+  ctx.strokeStyle = "rgba(51, 65, 85, 0.25)";
+  ctx.lineWidth = 1.5;
+  for (var sy = 195; sy < 660; sy += 32) {
+    ctx.beginPath(); ctx.moveTo(0, sy); ctx.lineTo(WALL_X - 20, sy); ctx.stroke();
+    var off = ((sy / 32) % 2) * 26;
+    for (var sx = 20 + off; sx < WALL_X - 24; sx += 52) {
+      ctx.beginPath(); ctx.moveTo(sx, sy - 32); ctx.lineTo(sx, sy); ctx.stroke();
+    }
+  }
+
+  // Top Wall Parapet Shadow & Merlons (Battlements)
+  ctx.fillStyle = "#475569";
+  ctx.fillRect(WALL_X - 24, 175, 24, 495);
+  ctx.strokeStyle = "#1E293B";
+  ctx.lineWidth = 2;
+  for (var by = 180; by < 650; by += 44) {
+    ctx.fillStyle = "#CBD5E1";
+    drawRoundRectPath(WALL_X - 22, by, 22, 26, 3); ctx.fill(); ctx.stroke();
+  }
+
+  // Royal Banner Shield on Wall
+  ctx.fillStyle = "#4F46E5";
+  ctx.beginPath(); ctx.moveTo(32, 215); ctx.lineTo(74, 215); ctx.lineTo(74, 275); ctx.lineTo(53, 294); ctx.lineTo(32, 275); ctx.closePath();
+  ctx.fill(); ctx.stroke();
+  ctx.fillStyle = "#FACC15";
+  ctx.beginPath(); ctx.arc(53, 250, 10, 0, Math.PI * 2); ctx.fill();
+
+  // Reinforced Arched Castle Gate at GATE_Y
+  ctx.fillStyle = "#475569";
+  drawRoundRectPath(WALL_X - 42, GATE_Y - 52, 42, 104, 8); ctx.fill(); ctx.stroke();
+  ctx.fillStyle = "#78350F";
+  drawRoundRectPath(WALL_X - 34, GATE_Y - 42, 34, 84, 6); ctx.fill(); ctx.stroke();
+  // Gate Wood Planks & Iron Studs
+  ctx.strokeStyle = "#451A03";
+  ctx.beginPath(); ctx.moveTo(WALL_X - 34, GATE_Y); ctx.lineTo(WALL_X, GATE_Y); ctx.stroke();
+  ctx.fillStyle = "#94A3B8";
+  ctx.fillRect(WALL_X - 32, GATE_Y - 26, 30, 5);
+  ctx.fillRect(WALL_X - 32, GATE_Y + 21, 30, 5);
+
+  // Flickering Gate Torches
+  var flicker = Math.sin(animClock * 16) * 2;
+  [GATE_Y - 62, GATE_Y + 62].forEach(function(ty) {
+    ctx.fillStyle = "rgba(249, 115, 22, 0.35)";
+    ctx.beginPath(); ctx.arc(WALL_X - 8, ty, 14 + flicker * 0.5, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = "#F59E0B";
+    ctx.beginPath(); ctx.arc(WALL_X - 8, ty, 6, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = "#FEF08A";
+    ctx.beginPath(); ctx.arc(WALL_X - 8, ty, 3, 0, Math.PI * 2); ctx.fill();
+  });
+  ctx.restore();
+}
+
+function drawDefenders() {
+  ctx.save();
+  ctx.strokeStyle = "#1E293B";
+  ctx.lineWidth = 2;
+
+  // Royal Archers (North Parapet, cleanly above gate)
+  for (var a = 0; a < garrison.archer; a++) {
+    var ay = 205 + a * 30;
+    var ax = WALL_X - 36;
+    var bob = Math.sin(animClock * 3 + a) * 1.5;
+    ctx.save();
+    ctx.translate(ax, ay + bob);
+    // Cloak & Hood
+    ctx.fillStyle = "#15803D";
+    ctx.beginPath(); ctx.arc(0, 0, 10, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+    ctx.fillStyle = "#22C55E";
+    ctx.beginPath(); ctx.arc(0, -6, 7, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+    // Feather
+    ctx.fillStyle = "#FACC15";
+    ctx.beginPath(); ctx.moveTo(-4, -12); ctx.lineTo(-10, -18); ctx.lineTo(-1, -13); ctx.closePath(); ctx.fill();
+    // Curved Wooden Bow
+    ctx.strokeStyle = "#92400E"; ctx.lineWidth = 2.5;
+    ctx.beginPath(); ctx.arc(7, 0, 11, -1.1, 1.1); ctx.stroke();
+    ctx.strokeStyle = "#E2E8F0"; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(11, -9); ctx.lineTo(11, 9); ctx.stroke();
+    ctx.restore();
+  }
+
+  // Frost Mages (South Parapet, cleanly below gate)
+  for (var fm = 0; fm < garrison.frostMage; fm++) {
+    var fy = 518 + fm * 34;
+    var fxPos = WALL_X - 38;
+    ctx.save();
+    ctx.translate(fxPos, fy);
+    // Robe & Pointed Hat
+    ctx.fillStyle = "#0284C7";
+    ctx.beginPath(); ctx.arc(0, 2, 11, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+    ctx.fillStyle = "#0369A1";
+    ctx.beginPath(); ctx.moveTo(-10, -4); ctx.lineTo(0, -20); ctx.lineTo(10, -4); ctx.closePath(); ctx.fill(); ctx.stroke();
+    // Glowing Ice Staff
+    ctx.strokeStyle = "#78350F"; ctx.lineWidth = 2.5;
+    ctx.beginPath(); ctx.moveTo(11, 8); ctx.lineTo(13, -12); ctx.stroke();
+    ctx.fillStyle = "#7DD3FC";
+    ctx.beginPath(); ctx.arc(13, -14, 5 + Math.sin(animClock * 5) * 0.8, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = "#FFFFFF";
+    ctx.beginPath(); ctx.arc(13, -14, 2, 0, Math.PI * 2); ctx.fill();
+    ctx.restore();
+  }
+
+  // Fire Catapults (Behind North Archers)
+  for (var cp = 0; cp < garrison.catapult; cp++) {
+    var cy = 235 + cp * 48;
+    var cxPos = WALL_X - 78;
+    ctx.save();
+    ctx.translate(cxPos, cy);
+    // Wooden Frame & Wheels
+    ctx.fillStyle = "#78350F";
+    drawRoundRectPath(-14, -6, 28, 16, 3); ctx.fill(); ctx.stroke();
+    ctx.fillStyle = "#451A03";
+    ctx.beginPath(); ctx.arc(-9, 10, 5, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+    ctx.beginPath(); ctx.arc(9, 10, 5, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+    // Throwing Arm & Fire Boulder
+    ctx.strokeStyle = "#92400E"; ctx.lineWidth = 3;
+    ctx.beginPath(); ctx.moveTo(4, -2); ctx.lineTo(-10, -16); ctx.stroke();
+    ctx.fillStyle = "#F97316";
+    ctx.beginPath(); ctx.arc(-11, -17, 6, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = "#FEF08A";
+    ctx.beginPath(); ctx.arc(-11, -17, 2.5, 0, Math.PI * 2); ctx.fill();
+    ctx.restore();
+  }
+
+  // Thunder Wizards (Behind South Frost Mages)
+  for (var wz = 0; wz < garrison.wizard; wz++) {
+    var wy = 530 + wz * 42;
+    var wxPos = WALL_X - 78;
+    ctx.save();
+    ctx.translate(wxPos, wy);
+    ctx.fillStyle = "#7C3AED";
+    ctx.beginPath(); ctx.arc(0, 2, 11, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+    ctx.fillStyle = "#5B21B6";
+    ctx.beginPath(); ctx.moveTo(-10, -4); ctx.lineTo(0, -21); ctx.lineTo(10, -4); ctx.closePath(); ctx.fill(); ctx.stroke();
+    // Gold Trim & Lightning Staff
+    ctx.fillStyle = "#FACC15"; ctx.fillRect(-8, -5, 16, 3);
+    ctx.strokeStyle = "#451A03"; ctx.lineWidth = 2.5;
+    ctx.beginPath(); ctx.moveTo(11, 8); ctx.lineTo(13, -12); ctx.stroke();
+    ctx.fillStyle = "#A78BFA";
+    ctx.beginPath(); ctx.arc(13, -14, 5, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = "#FFFFFF";
+    ctx.beginPath(); ctx.arc(13, -14, 2.5, 0, Math.PI * 2); ctx.fill();
+    ctx.restore();
+  }
+
+  // Flame Dragons (Perched on inner Keep battlements)
+  for (var dg = 0; dg < garrison.dragon; dg++) {
+    var dy = 315 + dg * 48;
+    var dxPos = WALL_X - 115;
+    var wingFlap = Math.sin(animClock * 6 + dg) * 6;
+    ctx.save();
+    ctx.translate(dxPos, dy);
+    // Wing
+    ctx.fillStyle = "#991B1B";
+    ctx.beginPath(); ctx.moveTo(-2, -2); ctx.lineTo(-18, -18 + wingFlap); ctx.lineTo(-12, 4); ctx.closePath(); ctx.fill(); ctx.stroke();
+    // Crimson Body & Golden Belly
+    ctx.fillStyle = "#DC2626";
+    ctx.beginPath(); ctx.ellipse(0, 0, 14, 10, 0, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+    ctx.fillStyle = "#FACC15";
+    ctx.beginPath(); ctx.ellipse(2, 4, 8, 4, 0, 0, Math.PI * 2); ctx.fill();
+    // Horned Head
+    ctx.fillStyle = "#EF4444";
+    ctx.beginPath(); ctx.arc(10, -6, 7, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+    ctx.fillStyle = "#FEF08A";
+    ctx.beginPath(); ctx.arc(13, -7, 2.2, 0, Math.PI * 2); ctx.fill();
+    ctx.restore();
+  }
+
+  ctx.restore();
+}
+
+// Crisp Minimalist Vector Monster Sprites
+function drawGoblinSprite(e) {
+  ctx.strokeStyle = "#1E293B";
+  ctx.lineWidth = 2;
+  // Leather Body & Belt
+  ctx.fillStyle = "#78350F";
+  drawRoundRectPath(-9, -6, 18, 19, 4); ctx.fill(); ctx.stroke();
+  ctx.fillStyle = "#451A03"; ctx.fillRect(-9, 3, 18, 4);
+  // Pointy Ears
+  ctx.fillStyle = "#4ADE80";
+  ctx.beginPath(); ctx.moveTo(-8, -17); ctx.lineTo(-18, -21); ctx.lineTo(-8, -12); ctx.closePath(); ctx.fill(); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(8, -17); ctx.lineTo(18, -21); ctx.lineTo(8, -12); ctx.closePath(); ctx.fill(); ctx.stroke();
+  // Head & Fierce Eyes
+  ctx.fillStyle = "#4ADE80";
+  ctx.beginPath(); ctx.arc(0, -15, 10, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+  ctx.fillStyle = "#EF4444";
+  ctx.beginPath(); ctx.arc(-4, -16, 2, 0, Math.PI * 2); ctx.arc(3, -16, 2, 0, Math.PI * 2); ctx.fill();
+  // Curved Dagger
+  ctx.fillStyle = "#E2E8F0";
+  ctx.beginPath(); ctx.moveTo(-10, 2); ctx.lineTo(-22, -2); ctx.lineTo(-14, 6); ctx.closePath(); ctx.fill(); ctx.stroke();
+}
+
+function drawOrcSprite(e) {
+  ctx.strokeStyle = "#1E293B";
+  ctx.lineWidth = 2;
+  // Heavy Muscular Torso & Iron Pauldron
+  ctx.fillStyle = "#475569";
+  drawRoundRectPath(-14, -6, 28, 25, 5); ctx.fill(); ctx.stroke();
+  ctx.fillStyle = "#94A3B8";
+  ctx.beginPath(); ctx.arc(10, -4, 7, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+  // Head & Lower Tusks
+  ctx.fillStyle = "#16A34A";
+  ctx.beginPath(); ctx.arc(0, -19, 13, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+  ctx.fillStyle = "#FEF08A";
+  ctx.beginPath(); ctx.moveTo(-6, -12); ctx.lineTo(-4, -18); ctx.lineTo(-2, -12); ctx.closePath(); ctx.fill();
+  ctx.beginPath(); ctx.moveTo(2, -12); ctx.lineTo(4, -18); ctx.lineTo(6, -12); ctx.closePath(); ctx.fill();
+  ctx.fillStyle = "#DC2626";
+  ctx.fillRect(-6, -23, 4, 3); ctx.fillRect(1, -23, 4, 3);
+  // War Axe
+  ctx.fillStyle = "#78350F"; ctx.fillRect(-19, -24, 5, 34); ctx.strokeRect(-19, -24, 5, 34);
+  ctx.fillStyle = "#CBD5E1";
+  ctx.beginPath(); ctx.moveTo(-19, -24); ctx.quadraticCurveTo(-32, -18, -19, -10); ctx.closePath(); ctx.fill(); ctx.stroke();
+}
+
+function drawTrollSprite(e) {
+  ctx.strokeStyle = "#1E293B";
+  ctx.lineWidth = 2.2;
+  // Massive Stone-Grey Body
+  ctx.fillStyle = "#4B5563";
+  drawRoundRectPath(-18, -8, 36, 30, 7); ctx.fill(); ctx.stroke();
+  // Head & Mossy Hair
+  ctx.fillStyle = "#6B7280";
+  ctx.beginPath(); ctx.arc(0, -24, 18, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+  ctx.fillStyle = "#65A30D";
+  ctx.beginPath(); ctx.arc(0, -38, 12, Math.PI, Math.PI * 2); ctx.fill();
+  ctx.fillStyle = "#FACC15";
+  ctx.fillRect(-7, -26, 5, 4); ctx.fillRect(2, -26, 5, 4);
+  // Giant Club
+  ctx.fillStyle = "#78350F";
+  ctx.beginPath(); ctx.moveTo(-22, 10); ctx.lineTo(-28, -36); ctx.lineTo(-16, -36); ctx.lineTo(-16, 10); ctx.closePath();
+  ctx.fill(); ctx.stroke();
+}
+
+// 8 Distinct Stylized Boss Sprites!
+function drawBossSprite(e) {
+  var w = e.bossData.wave;
+  ctx.strokeStyle = "#0F172A";
+  ctx.lineWidth = 2.2;
+
+  if (w === 1) {
+    // Gark the Goblin Chieftain: Headband tails, twin curved daggers, spiked shoulders
+    ctx.fillStyle = "#78350F"; drawRoundRectPath(-15, -8, 30, 28, 6); ctx.fill(); ctx.stroke();
+    ctx.fillStyle = "#22C55E";
+    ctx.beginPath(); ctx.moveTo(-14, -26); ctx.lineTo(-28, -32); ctx.lineTo(-14, -18); ctx.closePath(); ctx.fill(); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(14, -26); ctx.lineTo(28, -32); ctx.lineTo(14, -18); ctx.closePath(); ctx.fill(); ctx.stroke();
+    ctx.beginPath(); ctx.arc(0, -23, 16, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+    ctx.fillStyle = "#EF4444"; ctx.fillRect(-16, -32, 32, 7); ctx.strokeRect(-16, -32, 32, 7);
+    ctx.beginPath(); ctx.moveTo(16, -30); ctx.lineTo(28, -24); ctx.lineTo(24, -19); ctx.closePath(); ctx.fill();
+    ctx.fillStyle = "#FACC15"; ctx.fillRect(-7, -23, 5, 4); ctx.fillRect(2, -23, 5, 4);
+    ctx.fillStyle = "#E2E8F0";
+    ctx.beginPath(); ctx.moveTo(-16, 0); ctx.lineTo(-30, -8); ctx.lineTo(-20, 6); ctx.closePath(); ctx.fill(); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(16, 0); ctx.lineTo(30, -8); ctx.lineTo(20, 6); ctx.closePath(); ctx.fill(); ctx.stroke();
+  } else if (w === 2) {
+    // Grashnak the Orc Warlord: Iron horned helm, heavy armor, giant double axe
+    ctx.fillStyle = "#475569"; drawRoundRectPath(-19, -9, 38, 32, 6); ctx.fill(); ctx.stroke();
+    ctx.fillStyle = "#15803D"; ctx.beginPath(); ctx.arc(0, -26, 18, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+    ctx.fillStyle = "#94A3B8"; ctx.beginPath(); ctx.arc(0, -32, 16, Math.PI, Math.PI * 2); ctx.fill(); ctx.stroke();
+    ctx.fillStyle = "#E2E8F0";
+    ctx.beginPath(); ctx.moveTo(-14, -33); ctx.lineTo(-24, -46); ctx.lineTo(-8, -38); ctx.closePath(); ctx.fill(); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(14, -33); ctx.lineTo(24, -46); ctx.lineTo(8, -38); ctx.closePath(); ctx.fill(); ctx.stroke();
+    ctx.fillStyle = "#EF4444"; ctx.fillRect(-7, -28, 5, 4); ctx.fillRect(2, -28, 5, 4);
+    ctx.fillStyle = "#78350F"; ctx.fillRect(-27, -36, 6, 52); ctx.strokeRect(-27, -36, 6, 52);
+    ctx.fillStyle = "#CBD5E1";
+    drawRoundRectPath(-40, -44, 30, 18, 4); ctx.fill(); ctx.stroke();
+  } else if (w === 3) {
+    // Thorg the Troll King: Moss crown, jagged tusk face, spiked boulder club
+    ctx.fillStyle = "#374151"; drawRoundRectPath(-22, -8, 44, 38, 8); ctx.fill(); ctx.stroke();
+    ctx.fillStyle = "#4B5563"; ctx.beginPath(); ctx.arc(0, -32, 23, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+    ctx.fillStyle = "#65A30D"; drawRoundRectPath(-18, -55, 36, 10, 3); ctx.fill(); ctx.stroke();
+    ctx.fillStyle = "#FACC15"; ctx.beginPath(); ctx.moveTo(-12, -55); ctx.lineTo(-6, -64); ctx.lineTo(0, -55); ctx.lineTo(6, -64); ctx.lineTo(12, -55); ctx.closePath(); ctx.fill(); ctx.stroke();
+    ctx.fillStyle = "#92400E";
+    ctx.beginPath(); ctx.moveTo(-32, 14); ctx.lineTo(-38, -50); ctx.lineTo(-20, -50); ctx.lineTo(-20, 14); ctx.closePath(); ctx.fill(); ctx.stroke();
+  } else if (w === 4) {
+    // Malakor the Necromancer: Flowing dark robe, skull mask, hovering crystal orb
+    ctx.fillStyle = "#3B0764";
+    ctx.beginPath(); ctx.moveTo(-20, 28); ctx.lineTo(-14, -12); ctx.lineTo(14, -12); ctx.lineTo(20, 28); ctx.closePath(); ctx.fill(); ctx.stroke();
+    ctx.fillStyle = "#581C87"; ctx.beginPath(); ctx.arc(0, -26, 18, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+    ctx.fillStyle = "#F8FAFC"; drawRoundRectPath(-9, -32, 18, 16, 5); ctx.fill(); ctx.stroke();
+    ctx.fillStyle = "#A855F7"; ctx.fillRect(-6, -27, 4, 4); ctx.fillRect(2, -27, 4, 4);
+    ctx.fillStyle = "#78350F"; ctx.fillRect(17, -42, 5, 56); ctx.strokeRect(17, -42, 5, 56);
+    var orbY = -48 + Math.sin(animClock * 4) * 3;
+    ctx.fillStyle = "rgba(192, 132, 252, 0.35)"; ctx.beginPath(); ctx.arc(19.5, orbY, 13, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = "#C084FC"; ctx.beginPath(); ctx.arc(19.5, orbY, 8, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+  } else if (w === 5) {
+    // Golgoth the Iron Colossus: Riveted steel armor, glowing visor, tower shield
+    ctx.fillStyle = "#334155"; drawRoundRectPath(-26, -42, 52, 60, 8); ctx.fill(); ctx.stroke();
+    ctx.fillStyle = "#64748B"; ctx.beginPath(); ctx.arc(0, -34, 18, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+    ctx.fillStyle = "#FDE047"; drawRoundRectPath(-10, -38, 20, 5, 2); ctx.fill();
+    ctx.fillStyle = "#94A3B8"; drawRoundRectPath(-40, -24, 16, 40, 4); ctx.fill(); ctx.stroke();
+    ctx.fillStyle = "#CBD5E1"; ctx.beginPath(); ctx.arc(-32, -4, 4, 0, Math.PI * 2); ctx.fill();
+  } else if (w === 6) {
+    // Ignis the Crimson Wyvern: Flapping membrane wings, horned drake head
+    var wFlap = Math.sin(animClock * 6) * 8;
+    ctx.fillStyle = "#B91C1C";
+    ctx.beginPath(); ctx.moveTo(-16, -16); ctx.lineTo(-48, -46 + wFlap); ctx.lineTo(-24, 4); ctx.closePath(); ctx.fill(); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(16, -16); ctx.lineTo(48, -46 + wFlap); ctx.lineTo(24, 4); ctx.closePath(); ctx.fill(); ctx.stroke();
+    ctx.fillStyle = "#991B1B"; drawRoundRectPath(-18, -10, 36, 32, 8); ctx.fill(); ctx.stroke();
+    ctx.fillStyle = "#FACC15"; drawRoundRectPath(-10, -6, 20, 22, 5); ctx.fill();
+    ctx.fillStyle = "#DC2626"; ctx.beginPath(); ctx.arc(0, -30, 19, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+    ctx.fillStyle = "#FEF08A"; ctx.fillRect(-7, -33, 5, 4); ctx.fillRect(2, -33, 5, 4);
+  } else if (w === 7) {
+    // Frostfang the Glacial Titan: Crystalline ice spikes, frosted core
+    ctx.fillStyle = "#0284C7"; drawRoundRectPath(-22, -10, 44, 40, 8); ctx.fill(); ctx.stroke();
+    ctx.fillStyle = "#38BDF8"; ctx.beginPath(); ctx.arc(0, -32, 22, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+    ctx.fillStyle = "#E0F2FE";
+    ctx.beginPath(); ctx.moveTo(-22, -28); ctx.lineTo(-40, -50); ctx.lineTo(-12, -36); ctx.closePath(); ctx.fill(); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(22, -28); ctx.lineTo(40, -50); ctx.lineTo(12, -36); ctx.closePath(); ctx.fill(); ctx.stroke();
+    ctx.fillStyle = "#BAE6FD"; ctx.beginPath(); ctx.arc(0, 6, 8, 0, Math.PI * 2); ctx.fill();
+  } else {
+    // Lord Malakar - Chaos Overlord: Animated shadow wings, demon horns, burning crown
+    var dFlap = Math.sin(animClock * 5) * 7;
+    ctx.fillStyle = "#312E81";
+    ctx.beginPath(); ctx.moveTo(-20, -14); ctx.lineTo(-56, -48 + dFlap); ctx.lineTo(-30, 10); ctx.closePath(); ctx.fill(); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(20, -14); ctx.lineTo(56, -48 + dFlap); ctx.lineTo(30, 10); ctx.closePath(); ctx.fill(); ctx.stroke();
+    ctx.fillStyle = "#1E1B4B"; drawRoundRectPath(-24, -10, 48, 44, 8); ctx.fill(); ctx.stroke();
+    ctx.fillStyle = "#0F172A"; ctx.beginPath(); ctx.arc(0, -34, 24, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+    ctx.fillStyle = "#DC2626";
+    ctx.beginPath(); ctx.moveTo(-14, -48); ctx.lineTo(-28, -68); ctx.lineTo(-6, -50); ctx.closePath(); ctx.fill(); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(14, -48); ctx.lineTo(28, -68); ctx.lineTo(6, -50); ctx.closePath(); ctx.fill(); ctx.stroke();
+    ctx.fillStyle = "#EF4444"; ctx.fillRect(-10, -37, 6, 5); ctx.fillRect(4, -37, 6, 5);
+    ctx.fillStyle = "#F59E0B"; drawRoundRectPath(-16, -58, 32, 8, 2); ctx.fill(); ctx.stroke();
+  }
+}
+
+/* ==========================================================================
+   VIEW 2: INTERACTIVE WORKSHEET LOGIC (All 45 Questions)
+   ========================================================================== */
+var wsSolvedMap = {};
+
+function renderWorksheet(filter) {
+  var container = document.getElementById("worksheet_items_container");
+  container.innerHTML = "";
+
+  var filterType = filter || 'all';
+
+  // Section 1: Sentence Rewriting
+  if (filterType === 'all' || filterType === 'rewrite' || filterType.startsWith('l') || filterType === 'chips' || filterType === 'type') {
+    REWRITE_PATTERNS.forEach(function(pat) {
+      var filteredQ = pat.questions.filter(function(q) {
+        if (filterType === 'l1') return q.var === 1;
+        if (filterType === 'l2') return q.var === 2;
+        if (filterType === 'l3') return q.var === 3;
+        if (filterType === 'chips') return q.inputMode === 'chips';
+        if (filterType === 'type') return q.inputMode === 'type';
+        return true;
+      });
+      if (filteredQ.length === 0) return;
+
+      var sec = document.createElement("div");
+      sec.className = "pattern-section-block";
+      sec.innerHTML = 
+        '<div class="pattern-hdr">' +
+          '<h3>' + pat.title + '</h3>' +
+          '<div class="pattern-formula-pill">' + pat.formula + '</div>' +
+          '<div class="pattern-rule-desc">' + pat.rule_vn + '</div>' +
+        '</div>';
+
+      filteredQ.forEach(function(q) {
+        sec.appendChild(createWorksheetCard(q, "rewrite"));
+      });
+      container.appendChild(sec);
+    });
+  }
+
+  // Section 2: Word Forms
+  if (filterType === 'all' || filterType === 'wordform' || filterType.startsWith('l') || filterType === 'chips' || filterType === 'type') {
+    WORDFORM_ROOTS.forEach(function(root) {
+      var filteredQ = root.questions.filter(function(q) {
+        if (filterType === 'l1') return q.var === 1;
+        if (filterType === 'l2') return q.var === 2;
+        if (filterType === 'l3') return q.var === 3;
+        if (filterType === 'chips') return q.inputMode === 'chips';
+        if (filterType === 'type') return q.inputMode === 'type';
+        return true;
+      });
+      if (filteredQ.length === 0) return;
+
+      var sec = document.createElement("div");
+      sec.className = "pattern-section-block";
+      sec.innerHTML = 
+        '<div class="pattern-hdr" style="border-left-color:var(--secondary);">' +
+          '<h3>Gia đình từ: ' + root.root + ' (' + root.meaning_vn + ')</h3>' +
+          '<div class="pattern-formula-pill" style="background:var(--secondary-light); color:var(--secondary);">' + root.family + '</div>' +
+        '</div>';
+
+      filteredQ.forEach(function(q) {
+        sec.appendChild(createWorksheetCard(q, "wordform", root));
+      });
+      container.appendChild(sec);
+    });
+  }
+
+  updateWorksheetProgress();
+}
+
+function speakWSSentence(qId) {
+  var q = ALL_POOL.find(function(it) { return it.id === qId; });
+  if (!q) return;
+  if (q.type === "rewrite") {
+    speakText(q.target);
+  } else {
+    speakText(q.sent.replace("______________", q.ans));
+  }
+}
+
+function createWorksheetCard(q, type, rootObj) {
+  var card = document.createElement("div");
+  card.className = "ws-q-card" + (wsSolvedMap[q.id] ? " solved" : "");
+  card.id = "wscard_" + q.id;
+
+  var badgeClass = q.var === 1 ? "l1" : (q.var === 2 ? "l2" : "l3");
+  var modeBadge = (q.inputMode === "type")
+    ? '<span class="badge-mode type"><span class="badge-icon">⌨️</span> Tự gõ bàn phím</span>'
+    : '<span class="badge-mode chips"><span class="badge-icon">🧩</span> Ghép thẻ từ</span>';
+
+  var promptHtml = "";
+  if (type === "rewrite") {
+    promptHtml = 
+      '<div class="orig-sent-text">' + q.orig + '</div>' +
+      '<div class="lead-prompt-text">' + q.lead + ' ...</div>';
+  } else {
+    promptHtml = 
+      '<div class="orig-sent-text">' + q.sent + '</div>' +
+      '<div style="font-size:0.86rem; color:var(--muted); font-weight:700;">Từ gốc: [' + rootObj.root + '] • ' + rootObj.meaning_vn + '</div>';
+  }
+
+  // Build answer controls based on inputMode
+  var answerControlsHtml = "";
+  if (q.inputMode === "chips") {
+    if (type === "rewrite" && q.chips) {
+      answerControlsHtml = 
+        '<div class="answer-display-box">' +
+          '<input type="text" class="ans-text-input" id="ws_inp_' + q.id + '" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Bấm chọn các từ bên dưới hoặc gõ trực tiếp..." value="' + (wsSolvedMap[q.id] ? q.target : '') + '">' +
+        '</div>' +
+        '<div class="chips-container" id="ws_chips_' + q.id + '">';
+      q.chips.forEach(function(w) {
+        answerControlsHtml += '<button class="bank-chip" onclick="appendWordToWSInp(&quot;' + q.id + '&quot;, this.innerText)">' + w + '</button>';
+      });
+      answerControlsHtml += '<button class="btn-secondary" style="padding:6px 12px; font-size:0.8rem;" onclick="clearWSInp(&quot;' + q.id + '&quot;)">↺ Xóa</button>';
+      answerControlsHtml += '</div>';
+    } else if (type === "wordform" && q.options) {
+      answerControlsHtml = 
+        '<div class="answer-display-box">' +
+          '<input type="text" class="ans-text-input" id="ws_inp_' + q.id + '" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Bấm chọn từ bên dưới hoặc gõ..." value="' + (wsSolvedMap[q.id] ? q.ans : '') + '">' +
+        '</div>' +
+        '<div class="chips-container" id="ws_chips_' + q.id + '">';
+      q.options.forEach(function(opt) {
+        answerControlsHtml += '<button class="bank-chip" onclick="setWSInp(&quot;' + q.id + '&quot;, this.innerText)">' + opt + '</button>';
+      });
+      answerControlsHtml += '<button class="btn-secondary" style="padding:6px 12px; font-size:0.8rem;" onclick="clearWSInp(&quot;' + q.id + '&quot;)">↺ Xóa</button>';
+      answerControlsHtml += '</div>';
+    }
+  } else {
+    // TYPING MODE: No chips, student MUST type with keyboard
+    var placeholderText = type === "rewrite" 
+      ? "✍️ Học sinh tự gõ câu hoàn chỉnh vào đây..." 
+      : "✍️ Học sinh tự gõ dạng đúng của từ vào đây...";
+    answerControlsHtml = 
+      '<div class="ws-typing-banner">⌨️ <strong>Chế độ tự gõ bàn phím:</strong> Học sinh tự gõ câu trả lời vào ô bên dưới bằng bàn phím để rèn luyện thói quen viết đúng.</div>' +
+      '<div class="answer-display-box" style="margin-top:8px;">' +
+        '<input type="text" class="ans-text-input" id="ws_inp_' + q.id + '" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="' + placeholderText + '" value="' + (wsSolvedMap[q.id] ? (type === "rewrite" ? q.target : q.ans) : '') + '">' +
+      '</div>';
+  }
+
+  card.innerHTML = 
+    '<div class="ws-q-top">' +
+      '<div class="ws-q-num">Câu ' + q.id.replace("rw_", "RW ").replace("wf_", "WF ") + '</div>' +
+      '<div style="display:flex; gap:6px; align-items:center;">' +
+        '<span class="badge-level ' + badgeClass + '">' + q.badge + '</span>' +
+        modeBadge +
+      '</div>' +
+    '</div>' +
+    '<div class="q-prompt-box">' + promptHtml + '</div>' +
+    '<div class="q-tools-row">' +
+      '<button class="btn-clue" onclick="toggleWSClue(&quot;' + q.id + '&quot;)">💡 Xem gợi ý</button>' +
+      '<button class="btn-speech" onclick="speakWSSentence(&quot;' + q.id + '&quot;)">🔊 Nghe phát âm</button>' +
+    '</div>' +
+    '<div class="clue-box" id="ws_clue_' + q.id + '">' + q.clue + '</div>' +
+    '<div class="answer-area">' + answerControlsHtml + '</div>' +
+    '<div class="feedback-box" id="ws_fb_' + q.id + '"></div>' +
+    '<div class="q-action-row">' +
+      '<button class="btn-secondary" onclick="revealWSAnswer(&quot;' + q.id + '&quot;)">Xem đáp án</button>' +
+      '<button class="btn-primary" onclick="checkWSAnswer(&quot;' + q.id + '&quot;, &quot;' + type + '&quot;)">✓ Kiểm tra</button>' +
+    '</div>';
+
+  return card;
+}
+
+function appendWordToWSInp(qId, word) {
+  var inp = document.getElementById("ws_inp_" + qId);
+  if (!inp) return;
+  var cur = inp.value.trim();
+  inp.value = cur ? (cur + " " + word) : word;
+}
+
+function setWSInp(qId, word) {
+  var inp = document.getElementById("ws_inp_" + qId);
+  if (inp) inp.value = word;
+}
+
+function clearWSInp(qId) {
+  var inp = document.getElementById("ws_inp_" + qId);
+  if (inp) inp.value = "";
+}
+
+function toggleWSClue(id) {
+  var box = document.getElementById("ws_clue_" + id);
+  if (box) box.classList.toggle("show");
+}
+
+function checkWSAnswer(id, type) {
+  var inp = document.getElementById("ws_inp_" + id);
+  var fb = document.getElementById("ws_fb_" + id);
+  var userVal = (inp ? inp.value.trim() : "");
+  if (!userVal) {
+    alert("Vui lòng nhập câu trả lời trước khi kiểm tra!");
+    return;
+  }
+
+  var q = ALL_POOL.find(function(it) { return it.id === id; });
+  if (!q) return;
+
+  var isCorrect = false;
+  var cleanUser = normalizeAnswer(userVal);
+
+  if (type === "rewrite") {
+    var cleanLeadPlusUser = normalizeAnswer(q.lead + " " + userVal);
+    var targets = [q.target].concat(q.accept || []);
+    for (var i = 0; i < targets.length; i++) {
+      var cleanTarget = normalizeAnswer(targets[i]);
+      if (cleanUser === cleanTarget || cleanLeadPlusUser === cleanTarget) {
+        isCorrect = true;
+        break;
+      }
+    }
+  } else {
+    isCorrect = (cleanUser === normalizeAnswer(q.ans));
+  }
+
+  if (isCorrect) {
+    Sound.correct();
+    wsSolvedMap[id] = true;
+    document.getElementById("wscard_" + id).classList.add("solved");
+    fb.className = "feedback-box correct";
+    fb.innerHTML = '<strong>✓ CHÍNH XÁC!</strong><br>' + q.explain;
+    addCoins(5);
+  } else {
+    Sound.wrong();
+    fb.className = "feedback-box wrong";
+    var model = type === "rewrite" ? q.target : q.ans;
+    fb.innerHTML = '<strong>✗ CHƯA ĐÚNG.</strong> Đáp án gợi ý: <strong>' + model + '</strong><br>' + q.explain;
+  }
+  updateWorksheetProgress();
+}
+
+function revealWSAnswer(id) {
+  var q = ALL_POOL.find(function(it) { return it.id === id; });
+  if (!q) return;
+  var inp = document.getElementById("ws_inp_" + id);
+  var fb = document.getElementById("ws_fb_" + id);
+  var model = q.type === "rewrite" ? q.target : q.ans;
+  if (inp) inp.value = model;
+  if (fb) {
+    fb.className = "feedback-box correct";
+    fb.innerHTML = '<strong>ĐÁP ÁN MẪU:</strong> <strong>' + model + '</strong><br>' + q.explain;
+  }
+  wsSolvedMap[id] = true;
+  document.getElementById("wscard_" + id).classList.add("solved");
+  updateWorksheetProgress();
+}
+
+function updateWorksheetProgress() {
+  var solved = Object.keys(wsSolvedMap).length;
+  var total = ALL_POOL.length;
+  var pct = Math.round((solved / total) * 100);
+  document.getElementById("ws_prog_text").textContent = solved + " / " + total + " (" + pct + "%)";
+  document.getElementById("ws_prog_fill").style.width = pct + "%";
+}
+
+function filterWorksheet(type, btn) {
+  document.querySelectorAll(".filter-btn").forEach(function(b) { b.classList.remove("active"); });
+  if (btn) btn.classList.add("active");
+  renderWorksheet(type);
+}
+
+// Enter key submission for typing inputs
+document.getElementById("gq_text_input").addEventListener("keydown", function(e) {
+  if (e.key === "Enter" && gamePhase === "question" && document.getElementById("btn_submit_game").style.display !== "none") {
+    e.preventDefault();
+    submitGameAnswer();
+  }
+});
+document.getElementById("gq_wf_text_input").addEventListener("keydown", function(e) {
+  if (e.key === "Enter" && gamePhase === "question" && document.getElementById("btn_submit_game").style.display !== "none") {
+    e.preventDefault();
+    submitGameAnswer();
+  }
+});
+
+// Initialize
+fitStage();
+updateGameHUD();
+nextGameQuestion();
+renderWorksheet('all');
+</script>
+</body>
+</html>
